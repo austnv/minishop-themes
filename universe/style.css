@@ -1,0 +1,737 @@
+/* ============================================================
+   UNIVERSE — космический скин для MiniShop
+   v3 — финальная сборка
+   - Туманности больше не тайлятся
+   - Звёзды медленно дрейфуют
+   - Прогресс-бар виден при любом %
+   - Кометы (только на десктопе)
+   - Мобильные: аккуратное меню, без лишних эффектов
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   0. Переменные
+   ------------------------------------------------------------ */
+.theme-key-universe {
+  --u-accent: #5cc8ff;
+  --u-accent-soft: rgba(92, 200, 255, 0.14);
+  --u-accent-glow: rgba(92, 200, 255, 0.35);
+  --u-accent-glow-strong: rgba(92, 200, 255, 0.55);
+  --u-violet: rgba(167, 139, 250, 0.28);
+  --u-glass: rgba(8, 14, 24, 0.55);
+  --u-glass-strong: rgba(8, 14, 24, 0.75);
+  --u-glass-border: rgba(92, 200, 255, 0.10);
+  --u-star: rgba(255, 255, 255, 0.9);
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Orbitron', 'Michroma', 'Inter', sans-serif;
+}
+
+/* ============================================================
+   1. КОСМИЧЕСКИЙ ФОН — три независимых слоя
+   ============================================================ */
+
+.theme-key-universe.app-shell {
+  background: var(--bg) !important;
+  position: relative;
+  isolation: isolate;
+}
+
+/* --- Слой 1: туманности. НЕ тайлятся, растянуты на весь экран. --- */
+.theme-key-universe.app-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 55% 40% at 18% 22%,
+      rgba(92, 200, 255, 0.10) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 35% at 82% 72%,
+      rgba(167, 139, 250, 0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 30% at 50% 100%,
+      rgba(92, 200, 255, 0.05) 0%, transparent 70%);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation: u-nebula-drift 30s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes u-nebula-drift {
+  0%   { transform: scale(1) translate3d(0, 0, 0); }
+  50%  { transform: scale(1.04) translate3d(-15px, -10px, 0); }
+  100% { transform: scale(1) translate3d(0, 0, 0); }
+}
+
+/* --- Слой 2: звёзды. Тайлятся, медленно дрейфуют по диагонали. --- */
+.theme-key-universe.app-shell::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    /* Мелкие далёкие звёзды — тайл 220px */
+    radial-gradient(1px 1px at 12% 18%, var(--u-star), transparent),
+    radial-gradient(1px 1px at 28% 62%, var(--u-star), transparent),
+    radial-gradient(1px 1px at 47% 8%,  var(--u-star), transparent),
+    radial-gradient(1px 1px at 63% 78%, var(--u-star), transparent),
+    radial-gradient(1px 1px at 82% 34%, var(--u-star), transparent),
+    radial-gradient(1px 1px at 8%  88%, var(--u-star), transparent),
+    radial-gradient(1px 1px at 55% 45%, var(--u-star), transparent),
+    radial-gradient(1px 1px at 92% 12%, var(--u-star), transparent),
+    radial-gradient(1px 1px at 36% 30%, var(--u-star), transparent),
+    radial-gradient(1px 1px at 74% 92%, var(--u-star), transparent),
+    /* Средние звёзды — тайл 420px */
+    radial-gradient(1.6px 1.6px at 22% 32%, var(--u-star), transparent),
+    radial-gradient(2px   2px   at 78% 58%, var(--u-star), transparent),
+    radial-gradient(1.6px 1.6px at 44% 84%, var(--u-star), transparent),
+    radial-gradient(2px   2px   at 6%  50%, var(--u-star), transparent),
+    radial-gradient(1.6px 1.6px at 68% 22%, var(--u-star), transparent);
+  background-size:
+    220px 220px, 220px 220px, 220px 220px, 220px 220px,
+    220px 220px, 220px 220px, 220px 220px, 220px 220px,
+    220px 220px, 220px 220px,
+    420px 420px, 420px 420px, 420px 420px, 420px 420px, 420px 420px;
+  background-repeat: repeat;
+  animation:
+    u-twinkle 12s ease-in-out infinite alternate,
+    u-star-drift 240s linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes u-twinkle {
+  0%   { opacity: 0.55; }
+  100% { opacity: 1; }
+}
+
+@keyframes u-star-drift {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-480px, -480px, 0); }
+}
+
+/* ============================================================
+   2. КОМЕТЫ — две штуки, летят по диагонали
+   ============================================================ */
+
+@keyframes u-comet {
+  0%   { transform: translate3d(0, 0, 0) rotate(35deg); opacity: 0; }
+  3%   { opacity: 1; }
+  8%   { opacity: 0; }
+  100% { transform: translate3d(-2000px, 1000px, 0) rotate(35deg); opacity: 0; }
+}
+
+.theme-key-universe .app-main-content::before {
+  content: '';
+  position: fixed;
+  top: 10%;
+  right: 5%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow:
+    0 0 6px 2px rgba(255, 255, 255, 0.85),
+    0 0 20px 6px rgba(92, 200, 255, 0.45);
+  pointer-events: none;
+  z-index: 2;
+  animation: u-comet 45s linear infinite;
+  animation-delay: 12s;
+}
+
+.theme-key-universe .app-main-content::after {
+  content: '';
+  position: fixed;
+  top: 40%;
+  right: 30%;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow:
+    0 0 5px 2px rgba(255, 255, 255, 0.7),
+    0 0 16px 5px rgba(92, 200, 255, 0.35);
+  pointer-events: none;
+  z-index: 2;
+  animation: u-comet 60s linear infinite;
+  animation-delay: 30s;
+}
+
+/* ============================================================
+   3. САЙДБАР — часть космоса, а не чёрный столб
+   ============================================================ */
+
+.theme-key-universe .app-sidebar,
+.theme-key-universe .bottom-nav,
+.theme-key-universe .admin-sidebar {
+  background: rgba(8, 14, 24, 0.45) !important;
+  backdrop-filter: blur(22px) saturate(130%);
+  -webkit-backdrop-filter: blur(22px) saturate(130%);
+  border-right: 1px solid rgba(92, 200, 255, 0.08) !important;
+  box-shadow: none !important;
+}
+
+/* ============================================================
+   4. ЛОГОТИП — переливается везде
+   ============================================================ */
+
+.theme-key-universe .app-sidebar h1,
+.theme-key-universe .app-sidebar [class*="brand"] strong,
+.theme-key-universe .app-sidebar [class*="brand"] span,
+.theme-key-universe .app-sidebar [class*="logo"] strong,
+.theme-key-universe .app-sidebar [class*="logo-text"],
+.theme-key-universe .admin-sidebar-brand strong,
+.theme-key-universe .brand-row strong,
+.theme-key-universe .login-brand h1,
+.theme-key-universe .app-logo-text {
+  background: linear-gradient(270deg,
+    #5cc8ff 0%, #a78bfa 25%, #00e5ff 50%, #a78bfa 75%, #5cc8ff 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  animation: u-shimmer 8s linear infinite;
+}
+
+@keyframes u-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* Иконка логотипа в сайдбаре светится */
+.theme-key-universe .app-sidebar svg,
+.theme-key-universe .app-sidebar img {
+  filter: drop-shadow(0 0 8px rgba(92, 200, 255, 0.5));
+}
+
+/* Большой логотип на главной — «дышит» свечением */
+.theme-key-universe .app-logo img,
+.theme-key-universe .app-logo svg,
+.theme-key-universe .login-brand svg {
+  filter: drop-shadow(0 0 14px rgba(92, 200, 255, 0.55))
+          drop-shadow(0 0 4px rgba(92, 200, 255, 0.8));
+  animation: u-logo-breathe 4s ease-in-out infinite;
+}
+
+@keyframes u-logo-breathe {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(92, 200, 255, 0.45))
+                     drop-shadow(0 0 4px rgba(92, 200, 255, 0.7)); }
+  50%      { filter: drop-shadow(0 0 20px rgba(92, 200, 255, 0.7))
+                     drop-shadow(0 0 8px rgba(92, 200, 255, 0.9)); }
+}
+
+/* ============================================================
+   5. ПАНЕЛИ — матовое стекло
+   ============================================================ */
+
+.theme-key-universe .app-card,
+.theme-key-universe .app-panel,
+.theme-key-universe .dialog-card,
+.theme-key-universe .auth-card,
+.theme-key-universe .support-overview-card,
+.theme-key-universe .support-list-card,
+.theme-key-universe .support-ticket-card,
+.theme-key-universe .support-conversation-card,
+.theme-key-universe .support-create-panel,
+.theme-key-universe .install-step,
+.theme-key-universe .install-subscription-card,
+.theme-key-universe .install-qr-wrap,
+.theme-key-universe .trial-offer-card,
+.theme-key-universe .subscription-purchase-description,
+.theme-key-universe .pending-payment-card {
+  background: var(--u-glass-strong) !important;
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  border: 1px solid var(--u-glass-border) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.theme-key-universe .app-card:hover,
+.theme-key-universe .support-list-card:hover,
+.theme-key-universe .support-ticket-card:hover {
+  border-color: rgba(92, 200, 255, 0.22) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(92, 200, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================================
+   6. НАВИГАЦИЯ — активные пункты
+   ============================================================ */
+
+.theme-key-universe .app-nav-item,
+.theme-key-universe .bottom-nav button,
+.theme-key-universe .admin-nav-item {
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-key-universe .app-nav-item:hover,
+.theme-key-universe .bottom-nav button:hover,
+.theme-key-universe .admin-nav-item:hover {
+  background: rgba(92, 200, 255, 0.06);
+  color: var(--accent);
+}
+
+/* Покрываем все варианты «активного» состояния */
+.theme-key-universe .app-nav-item.active,
+.theme-key-universe .app-nav-item.is-active,
+.theme-key-universe .app-nav-item[data-active="true"],
+.theme-key-universe .bottom-nav button.active,
+.theme-key-universe .bottom-nav button.is-active,
+.theme-key-universe .admin-nav-item.active,
+.theme-key-universe .admin-nav-item.is-active {
+  background: linear-gradient(90deg,
+    rgba(92, 200, 255, 0.16),
+    rgba(92, 200, 255, 0.03) 60%,
+    transparent) !important;
+  border-left: 3px solid var(--accent);
+  box-shadow: inset 0 0 18px rgba(92, 200, 255, 0.10);
+  color: var(--accent);
+}
+
+/* Пульсирующий индикатор справа */
+.theme-key-universe .app-nav-item.active::after,
+.theme-key-universe .app-nav-item.is-active::after,
+.theme-key-universe .app-nav-item[data-active="true"]::after,
+.theme-key-universe .bottom-nav button.active::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px 2px var(--u-accent-glow);
+  animation: u-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes u-pulse {
+  0%, 100% { opacity: 0.6; transform: translateY(-50%) scale(0.9); }
+  50%      { opacity: 1;   transform: translateY(-50%) scale(1.15); }
+}
+
+/* ============================================================
+   7. КНОПКИ
+   ============================================================ */
+
+.theme-key-universe .btn-primary,
+.theme-key-universe button[type="submit"],
+.theme-key-universe .admin-btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, #2b7fff 100%) !important;
+  border: none !important;
+  box-shadow:
+    0 4px 16px rgba(92, 200, 255, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  transition: box-shadow 0.35s ease, transform 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-key-universe .btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+    transparent 30%, rgba(255, 255, 255, 0.25) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.8s ease;
+}
+
+.theme-key-universe .btn-primary:hover:not(:disabled)::before {
+  transform: translateX(100%);
+}
+
+.theme-key-universe .btn-primary:hover:not(:disabled),
+.theme-key-universe .admin-btn-primary:hover:not(:disabled) {
+  box-shadow:
+    0 6px 24px rgba(92, 200, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-1px);
+}
+
+.theme-key-universe .btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.theme-key-universe .btn:not(.btn-primary),
+.theme-key-universe .admin-btn:not(.admin-btn-primary) {
+  background: rgba(92, 200, 255, 0.04);
+  border: 1px solid rgba(92, 200, 255, 0.18);
+  color: var(--accent);
+  transition: all 0.3s ease;
+}
+
+.theme-key-universe .btn:not(.btn-primary):hover:not(:disabled),
+.theme-key-universe .admin-btn:not(.admin-btn-primary):hover:not(:disabled) {
+  background: rgba(92, 200, 255, 0.10);
+  border-color: rgba(92, 200, 255, 0.35);
+  box-shadow: 0 0 12px rgba(92, 200, 255, 0.15);
+}
+
+/* ============================================================
+   8. ПРОГРЕСС-БАРЫ — видимые при любом %
+   ============================================================ */
+
+/* Трек */
+.theme-key-universe .progress,
+.theme-key-universe .progress-bar {
+  height: 10px !important;
+  border-radius: 10px;
+  border: 1px solid rgba(92, 200, 255, 0.18);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Заливка — универсальный селектор по inline width */
+.theme-key-universe .progress [style*="width"],
+.theme-key-universe .progress-bar [style*="width"],
+.theme-key-universe [role="progressbar"] [style*="width"],
+.theme-key-universe [class*="progress"] > [style*="width"],
+.theme-key-universe .progress span,
+.theme-key-universe .progress-fill,
+.theme-key-universe .progress > div:not([class*="label"]):not([class*="value"]) {
+  min-width: 12px !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, var(--accent), #00e5ff) !important;
+  box-shadow:
+    0 0 12px rgba(92, 200, 255, 0.55),
+    inset 0 0 4px rgba(255, 255, 255, 0.3) !important;
+  border-radius: 10px !important;
+  position: relative;
+  overflow: hidden;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Световой блик по заливке */
+.theme-key-universe .progress [style*="width"]::after,
+.theme-key-universe .progress-bar [style*="width"]::after,
+.theme-key-universe [role="progressbar"] [style*="width"]::after,
+.theme-key-universe [class*="progress"] > [style*="width"]::after,
+.theme-key-universe .progress span::after,
+.theme-key-universe .progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: u-scan 2.8s ease-in-out infinite;
+}
+
+@keyframes u-scan {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================================
+   9. ИКОНКИ LUCIDE
+   ============================================================ */
+
+.theme-key-universe svg.lucide,
+.theme-key-universe svg[class*="lucide-"] {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+  fill: none !important;
+  stroke-width: 1.7;
+  filter: drop-shadow(0 0 5px rgba(92, 200, 255, 0.4));
+  transition: filter 0.3s ease, stroke 0.3s ease;
+}
+
+.theme-key-universe .app-nav-item:hover svg.lucide,
+.theme-key-universe .app-nav-item.active svg.lucide,
+.theme-key-universe .app-nav-item.is-active svg.lucide {
+  filter: drop-shadow(0 0 8px rgba(92, 200, 255, 0.7));
+}
+
+.theme-key-universe .btn-primary svg.lucide,
+.theme-key-universe .bottom-nav button.active svg.lucide,
+.theme-key-universe .app-nav-item.active svg.lucide,
+.theme-key-universe .app-nav-item.is-active svg.lucide,
+.theme-key-universe .admin-btn-primary svg.lucide {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+}
+
+/* ============================================================
+   10. СКРОЛЛБАР
+   ============================================================ */
+
+.theme-key-universe ::-webkit-scrollbar { width: 6px; height: 6px; }
+.theme-key-universe ::-webkit-scrollbar-track { background: transparent; }
+.theme-key-universe ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg,
+    rgba(92, 200, 255, 0.3), rgba(92, 200, 255, 0.15));
+  border-radius: 8px;
+}
+.theme-key-universe ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg,
+    rgba(92, 200, 255, 0.55), rgba(92, 200, 255, 0.3));
+}
+
+/* ============================================================
+   11. АНИМАЦИЯ ПОЯВЛЕНИЯ КОНТЕНТА
+   ============================================================ */
+
+.theme-key-universe .app-main-content {
+  animation: u-warp-in 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes u-warp-in {
+  0%   { opacity: 0; transform: translateY(12px) scale(0.985); filter: blur(4px); }
+  60%  { filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* ============================================================
+   12. ВНЕ SHELL — тосты, дропдауны
+   ============================================================ */
+
+body:has(.theme-key-universe) .app-toast {
+  background: rgba(13, 21, 33, 0.94) !important;
+  border: 1px solid rgba(92, 200, 255, 0.22) !important;
+  color: var(--text) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+body:has(.theme-key-universe) .language-select-content,
+body:has(.theme-key-universe) .admin-select-content,
+body:has(.theme-key-universe) .install-platform-content,
+body:has(.theme-key-universe) .support-select-content,
+body:has(.theme-key-universe) .field-error-tooltip {
+  background: rgba(13, 21, 33, 0.96) !important;
+  border: 1px solid rgba(92, 200, 255, 0.22) !important;
+  color: var(--text) !important;
+  border-radius: 14px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+body:has(.theme-key-universe) .language-select-item[data-highlighted],
+body:has(.theme-key-universe) .language-select-item[data-selected],
+body:has(.theme-key-universe) .install-platform-item[data-highlighted],
+body:has(.theme-key-universe) .install-platform-item[data-selected] {
+  background: rgba(92, 200, 255, 0.12) !important;
+  color: var(--accent) !important;
+}
+
+/* ============================================================
+   13. БЕЙДЖИ, ТАБЛИЦЫ, ИНПУТЫ
+   ============================================================ */
+
+.theme-key-universe .ticket-status-badge,
+.theme-key-universe .admin-badge {
+  border-radius: 999px;
+  border: 1px solid rgba(92, 200, 255, 0.25);
+  background: rgba(92, 200, 255, 0.08);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.theme-key-universe .admin-table thead th,
+.theme-key-universe table thead th {
+  background: rgba(92, 200, 255, 0.04);
+  color: var(--accent);
+  border-bottom: 1px solid rgba(92, 200, 255, 0.18);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.theme-key-universe .admin-table tbody tr,
+.theme-key-universe table tbody tr {
+  border-bottom: 1px solid rgba(92, 200, 255, 0.06);
+  transition: background 0.25s ease;
+}
+
+.theme-key-universe .admin-table tbody tr:hover,
+.theme-key-universe table tbody tr:hover {
+  background: rgba(92, 200, 255, 0.04);
+}
+
+.theme-key-universe input,
+.theme-key-universe textarea,
+.theme-key-universe select,
+.theme-key-universe .input,
+.theme-key-universe .admin-input {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(92, 200, 255, 0.03);
+  border: 1px solid rgba(92, 200, 255, 0.14);
+}
+
+.theme-key-universe input:focus,
+.theme-key-universe textarea:focus,
+.theme-key-universe .input:focus,
+.theme-key-universe .admin-input:focus {
+  outline: none;
+  border-color: rgba(92, 200, 255, 0.45);
+  box-shadow: 0 0 0 3px rgba(92, 200, 255, 0.10);
+}
+
+/* ============================================================
+   14. ШРИФТ UI + ЗАГОЛОВКИ
+   ============================================================ */
+
+.theme-key-universe .app-shell,
+body:has(.theme-key-universe) {
+  font-family: var(--font-ui);
+}
+
+.theme-key-universe h1,
+.theme-key-universe h2,
+.theme-key-universe h3 {
+  font-family: var(--font-display);
+  letter-spacing: 0.6px;
+}
+
+/* ============================================================
+   15. ДОСТУПНОСТЬ
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-key-universe *,
+  .theme-key-universe *::before,
+  .theme-key-universe *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   16. МОБИЛЬНЫЕ — аккуратное меню, минимум эффектов
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  /* Убираем пульсирующую точку */
+  .theme-key-universe .app-nav-item.active::after,
+  .theme-key-universe .app-nav-item.is-active::after,
+  .theme-key-universe .app-nav-item[data-active="true"]::after,
+  .theme-key-universe .bottom-nav button.active::after,
+  .theme-key-universe .bottom-nav button.is-active::after {
+    display: none !important;
+  }
+
+  /* Боковое меню — без левой полосы, только мягкая подсветка */
+  .theme-key-universe .app-nav-item.active,
+  .theme-key-universe .app-nav-item.is-active,
+  .theme-key-universe .app-nav-item[data-active="true"] {
+    border-left: none !important;
+    padding-left: 1rem !important;
+    background: rgba(92, 200, 255, 0.14) !important;
+    box-shadow: inset 0 0 16px rgba(92, 200, 255, 0.10);
+    border-radius: 12px;
+  }
+
+  /* Нижняя навигация — мягкая подсветка без сдвигов */
+  .theme-key-universe .bottom-nav button.active,
+  .theme-key-universe .bottom-nav button.is-active {
+    background: rgba(92, 200, 255, 0.16) !important;
+    border-left: none !important;
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 1px rgba(92, 200, 255, 0.25),
+      inset 0 0 12px rgba(92, 200, 255, 0.10);
+  }
+
+  /* Иконка активного пункта — голубая со свечением */
+  .theme-key-universe .bottom-nav button.active svg.lucide,
+  .theme-key-universe .app-nav-item.active svg.lucide {
+    color: var(--accent) !important;
+    stroke: var(--accent) !important;
+    filter: drop-shadow(0 0 8px rgba(92, 200, 255, 0.7));
+  }
+
+  /* Туманность не «дышит» — экономит батарею */
+  .theme-key-universe.app-shell::before {
+    animation: none;
+  }
+
+  /* Дрейф звёзд замедляем в 2 раза */
+  .theme-key-universe.app-shell::after {
+    animation:
+      u-twinkle 12s ease-in-out infinite alternate,
+      u-star-drift 480s linear infinite;
+  }
+
+  /* Кометы отключаем */
+  .theme-key-universe .app-main-content::before,
+  .theme-key-universe .app-main-content::after {
+    display: none !important;
+  }
+
+  /* Панели — чуть меньше blur, чтобы не тормозить */
+  .theme-key-universe .app-card,
+  .theme-key-universe .app-panel {
+    backdrop-filter: blur(12px) saturate(115%);
+    -webkit-backdrop-filter: blur(12px) saturate(115%);
+  }
+}
+
+/* ============================================================
+   FIX: прогресс-бар — span должен стать блочным,
+   иначе width игнорируется и заливки не видно
+   ============================================================ */
+
+.theme-key-universe .progress,
+.theme-key-universe .progress-bar,
+.theme-key-universe [role="progressbar"] {
+  position: relative;
+  display: block;
+  height: 10px !important;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(92, 200, 255, 0.18);
+}
+
+/* Ключевой момент: span делаем блочным */
+.theme-key-universe .progress > span,
+.theme-key-universe .progress-bar > span,
+.theme-key-universe [role="progressbar"] > span {
+  display: block !important;
+  height: 100% !important;
+  min-width: 12px !important;
+  background: linear-gradient(90deg, #5cc8ff, #00e5ff) !important;
+  box-shadow:
+    0 0 12px rgba(92, 200, 255, 0.55),
+    inset 0 0 4px rgba(255, 255, 255, 0.3) !important;
+  border-radius: 10px !important;
+  position: relative;
+  overflow: hidden;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Световой блик бежит по заливке */
+.theme-key-universe .progress > span::after,
+.theme-key-universe .progress-bar > span::after,
+.theme-key-universe [role="progressbar"] > span::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: u-scan 2.8s ease-in-out infinite;
+}
+
+/* Отдельно чиним класс premium-progress, если у него свои стили */
+.theme-key-universe .progress.premium-progress {
+  height: 10px !important;
+}
+
+.theme-key-universe .progress.premium-progress > span {
+  display: block !important;
+  height: 100% !important;
+}

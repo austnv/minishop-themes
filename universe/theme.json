@@ -1,0 +1,54 @@
+{
+  "key": "universe",
+  "names": {
+    "ru": "Вселенная",
+    "en": "Universe"
+  },
+  "enabled": true,
+  "default": true,
+  "use_primary_accent": true,
+  "use_in_admin": true,
+  "assets_version": 3,
+  "css_file": "style.css",
+  "active_variant": "dark",
+  "variants": {
+    "dark": {
+      "color_scheme": "dark",
+      "accent": "#5cc8ff",
+      "bg": "#02040a",
+      "panel": "#080e18",
+      "panel_2": "#0d1521",
+      "panel_3": "#141f2e",
+      "border": "rgba(92, 200, 255, 0.14)",
+      "border_strong": "rgba(92, 200, 255, 0.32)",
+      "text": "#eaf3fb",
+      "muted": "#7d92ab",
+      "dim": "#465a73",
+      "danger": "#ff5c7c",
+      "blue": "#5cc8ff",
+      "radius": "18px",
+      "font_sans": "Inter, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
+      "font_logo": "Orbitron, Michroma, Inter, sans-serif",
+      "font_mono": "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+      "home_logo_scale_desktop": 75,
+      "home_logo_scale_mobile": 75
+    }
+  },
+  "hidden": false,
+  "tokens": {
+    "color_scheme": "dark",
+    "accent": "#5cc8ff",
+    "bg": "#02040a",
+    "panel": "#080e18",
+    "panel_2": "#0d1521",
+    "panel_3": "#141f2e",
+    "border": "rgba(92, 200, 255, 0.14)",
+    "border_strong": "rgba(92, 200, 255, 0.32)",
+    "text": "#eaf3fb",
+    "muted": "#7d92ab",
+    "dim": "#465a73",
+    "danger": "#ff5c7c",
+    "blue": "#5cc8ff",
+    "radius": "18px"
+  }
+}
