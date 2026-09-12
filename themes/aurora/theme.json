@@ -1,0 +1,58 @@
+{
+  "key": "aurora",
+  "names": {
+    "ru": "Аврора",
+    "en": "Aurora"
+  },
+  "enabled": true,
+  "default": false,
+  "use_primary_accent": true,
+  "use_in_admin": false,
+  "assets_version": 1,
+  "css_file": "style.css",
+  "active_variant": "dark",
+  "variants": {
+    "dark": {
+      "color_scheme": "dark",
+      "tokens": {
+        "accent": "#5eead4",
+        "accent_secondary": "#22c55e",
+        "accent_tertiary": "#818cf8",
+
+        "bg_base": "#050a14",
+        "bg_panel": "rgba(8, 14, 24, 0.55)",
+        "bg_panel_solid": "#0a1220",
+        "bg_elevated": "rgba(14, 22, 36, 0.75)",
+        "bg_sidebar": "rgba(8, 14, 24, 0.45)",
+
+        "text_primary": "#e2e8f0",
+        "text_secondary": "#94a3b8",
+        "text_muted": "#64748b",
+        "text_on_accent": "#050a14",
+
+        "border": "rgba(94, 234, 212, 0.12)",
+        "border_strong": "rgba(94, 234, 212, 0.25)",
+        "divider": "rgba(148, 163, 184, 0.12)",
+
+        "success": "#22c55e",
+        "warning": "#fbbf24",
+        "danger": "#f87171",
+        "info": "#818cf8",
+
+        "radius_sm": "8px",
+        "radius_md": "12px",
+        "radius_lg": "16px",
+        "radius_xl": "24px",
+
+        "font_sans": "Inter",
+        "font_logo": "Inter",
+        "font_mono": "JetBrains Mono",
+
+        "shadow_sm": "0 2px 8px rgba(0, 0, 0, 0.35)",
+        "shadow_md": "0 8px 24px rgba(0, 0, 0, 0.45)",
+        "shadow_glow": "0 0 24px rgba(94, 234, 212, 0.18)"
+      }
+    }
+  },
+  "hidden": false
+}
