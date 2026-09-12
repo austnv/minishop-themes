@@ -65,5 +65,5 @@ MIT. Каждая тема содержит копию лицензии в св�
 
 ## 🤝 Автор
 
-- **Git:** [@austnv](https://git.uvpn.app/austnv)
+- **Git:** [@austnv](https://github.com/austnv)
 - **Проект:** [uVPN](https://my.uvpn.app)
