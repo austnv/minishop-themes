@@ -80,17 +80,23 @@
 
 /* ============================================================
    2. ЛУЧИ СОЛНЦА — conic-gradient из точки солнца (::after)
-   Медленно вращаются вокруг солнца.
+   Контейнер — большой квадрат 200vmax с центром в точке
+   солнца. При вращении квадрат всегда покрывает вьюпорт,
+   поэтому лучи не обрезаются.
    ============================================================ */
 .theme-key-solar.app-shell::after {
   content: '';
   position: fixed;
-  inset: 0;
+  /* Центр квадрата точно в точке солнца (86% 14% вьюпорта) */
+  top: calc(14% - 100vmax);
+  left: calc(86% - 100vmax);
+  width: 200vmax;
+  height: 200vmax;
   z-index: -1;
   pointer-events: none;
 
   background-image: conic-gradient(
-    from 0deg at 86% 14%,
+    from 0deg at 50% 50%,
     rgba(251, 191, 36, 0.000) 0deg,
     rgba(251, 191, 36, 0.075) 5deg,
     rgba(251, 191, 36, 0.000) 10deg,
@@ -129,9 +135,26 @@
     rgba(249, 115, 22, 0.000) 340deg,
     rgba(249, 115, 22, 0.000) 360deg
   );
-  background-size: 100% 100%;
   background-repeat: no-repeat;
-  transform-origin: 86% 14%;
+
+  /* Маска: центр прозрачен для лучей, к краям они затухают,
+     чтобы не было видно резкой границы квадрата */
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    #000 0%,
+    #000 45%,
+    rgba(0, 0, 0, 0.7) 65%,
+    transparent 92%
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    #000 0%,
+    #000 45%,
+    rgba(0, 0, 0, 0.7) 65%,
+    transparent 92%
+  );
+
+  transform-origin: 50% 50%;
   animation: solar-rays-spin 180s linear infinite;
   will-change: transform;
 }
@@ -810,6 +833,8 @@ body:has(.theme-key-solar) .install-platform-item[data-selected] {
   .theme-key-solar.app-shell::after {
     background-image: none;
     animation: none;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   /* Пыль — реже */
