@@ -8,7 +8,7 @@
   "default": false,
   "use_primary_accent": true,
   "use_in_admin": true,
-  "assets_version": 1,
+  "assets_version": 2,
   "css_file": "style.css",
   "active_variant": "dark",
   "variants": {
