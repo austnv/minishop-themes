@@ -266,28 +266,25 @@
   backdrop-filter: blur(26px) saturate(140%);
   border-right: 1px solid rgba(94, 234, 212, 0.10) !important;
   box-shadow: none !important;
-  position: relative;
 }
 
-/* Aurora-линия на правом краю сайдбара */
-.theme-key-aurora .app-sidebar::after,
-.theme-key-aurora .admin-sidebar::after {
-  content: '';
-  position: absolute;
-  top: 10%;
-  right: 0;
-  bottom: 10%;
-  width: 1px;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(94, 234, 212, 0.35) 20%,
-    rgba(34, 197, 94, 0.55) 50%,
-    rgba(129, 140, 248, 0.35) 80%,
-    transparent 100%
-  );
-  pointer-events: none;
-  filter: blur(0.5px);
+/* Aurora-линия на правом краю сайдбара — только десктоп,
+   через background-image, без position:relative */
+@media (min-width: 1024px) {
+  .theme-key-aurora .app-sidebar,
+  .theme-key-aurora .admin-sidebar {
+    background-image: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(94, 234, 212, 0.35) 20%,
+      rgba(34, 197, 94, 0.55) 50%,
+      rgba(129, 140, 248, 0.35) 80%,
+      transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 1px 80%;
+  }
 }
 
 /* ============================================================
