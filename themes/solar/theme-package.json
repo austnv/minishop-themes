@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "version": "0.1.0",
+  "description": {
+    "ru": "Восход",
+    "en": "Solar"
+  },
+  "author": { "name": "austnv" },
+  "license": "MIT",
+  "homepage": "https://github.com/austnv/minishop-themes",
+  "preview": "preview.png",
+  "compatibility": { "theme_api": 1 }
+}
