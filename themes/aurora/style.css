@@ -36,69 +36,56 @@
 }
 
 /* ============================================================
-   1. ФОН — слой 1: волна полярного сияния (::before)
+   1. ФОН — слой 1: полосы полярного сияния (::before)
+   Пять мягких эллипсов разного цвета — без mask-image,
+   чтобы не было резких горизонтальных срезов.
    ============================================================ */
 .theme-key-aurora.app-shell::before {
   content: '';
   position: fixed;
-  inset: 0;
+  inset: -5%;
   z-index: -2;
   pointer-events: none;
 
-  /* Многослойный aurora-градиент: индиго → бирюза → зелёный → бирюза */
-  background:
-    linear-gradient(
-      180deg,
-      transparent 0%,
-      rgba(129, 140, 248, 0.06) 10%,
-      rgba(94, 234, 212, 0.16) 25%,
-      rgba(34, 197, 94, 0.20) 42%,
-      rgba(94, 234, 212, 0.14) 56%,
-      rgba(129, 140, 248, 0.07) 72%,
-      transparent 88%
-    ),
-    linear-gradient(
-      180deg,
-      transparent 0%,
-      rgba(94, 234, 212, 0.05) 6%,
-      rgba(129, 140, 248, 0.05) 12%,
-      transparent 22%
-    );
-  background-size: 100% 100%, 100% 100%;
-  background-repeat: no-repeat, no-repeat;
+  background-image:
+    radial-gradient(ellipse 55% 42% at 8% 18%,
+      rgba(94, 234, 212, 0.34) 0%,
+      rgba(94, 234, 212, 0.14) 28%,
+      transparent 62%),
+    radial-gradient(ellipse 50% 48% at 30% 10%,
+      rgba(34, 197, 94, 0.36) 0%,
+      rgba(34, 197, 94, 0.13) 30%,
+      transparent 65%),
+    radial-gradient(ellipse 55% 42% at 52% 20%,
+      rgba(94, 234, 212, 0.32) 0%,
+      rgba(94, 234, 212, 0.12) 28%,
+      transparent 62%),
+    radial-gradient(ellipse 50% 48% at 74% 12%,
+      rgba(34, 197, 94, 0.30) 0%,
+      rgba(34, 197, 94, 0.11) 30%,
+      transparent 65%),
+    radial-gradient(ellipse 55% 42% at 96% 22%,
+      rgba(129, 140, 248, 0.28) 0%,
+      rgba(129, 140, 248, 0.10) 30%,
+      transparent 65%),
+    radial-gradient(ellipse 90% 30% at 50% -5%,
+      rgba(129, 140, 248, 0.16) 0%,
+      transparent 75%);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 
-  /* Форма волны: шесть смещённых радиальных «горбов» */
-  -webkit-mask-image:
-    radial-gradient(circle at 8% 100%, transparent 32%, #000 34%),
-    radial-gradient(circle at 26% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 44% 100%, transparent 32%, #000 34%),
-    radial-gradient(circle at 62% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 80% 100%, transparent 32%, #000 34%),
-    radial-gradient(circle at 98% 100%, transparent 34%, #000 36%);
-  mask-image:
-    radial-gradient(circle at 8% 100%, transparent 32%, #000 34%),
-    radial-gradient(circle at 26% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 44% 100%, transparent 32%, #000 34%),
-    radial-gradient(circle at 62% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 80% 100%, transparent 32%, #000 34%),
-    radial-gradient(circle at 98% 100%, transparent 34%, #000 36%);
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-  -webkit-mask-size: 400px 200px;
-  mask-size: 400px 200px;
-  -webkit-mask-position: 0 0;
-  mask-position: 0 0;
-  animation: aurora-drift 180s linear infinite;
-  will-change: mask-position;
+  animation: aurora-drift 200s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 @keyframes aurora-drift {
-  0%   { -webkit-mask-position: 0 0;      mask-position: 0 0; }
-  100% { -webkit-mask-position: -400px 0; mask-position: -400px 0; }
+  0%   { transform: translate3d(0, 0, 0) scale(1);       opacity: 0.9; }
+  50%  { transform: translate3d(-2%, 1%, 0) scale(1.02); opacity: 1;   }
+  100% { transform: translate3d(0, 0, 0) scale(1);       opacity: 0.9; }
 }
 
 /* ============================================================
-   2. ФОН — слой 2: звёзды + вертикальные aurora-лучи (::after)
+   2. ФОН — слой 2: вертикальные aurora-лучи + звёзды (::after)
    ============================================================ */
 .theme-key-aurora.app-shell::after {
   content: '';
@@ -107,32 +94,23 @@
   z-index: -1;
   pointer-events: none;
 
-  /* Звёзды: 8 тайловых точек разного размера и яркости */
   background-image:
-    radial-gradient(1.4px 1.4px at 12% 22%, rgba(255, 255, 255, 0.85), transparent 60%),
-    radial-gradient(1px   1px   at 28% 68%, rgba(255, 255, 255, 0.55), transparent 60%),
-    radial-gradient(1.8px 1.8px at 44% 14%, rgba(255, 255, 255, 0.75), transparent 60%),
-    radial-gradient(1px   1px   at 61% 48%, rgba(255, 255, 255, 0.50), transparent 60%),
-    radial-gradient(1.6px 1.6px at 76% 82%, rgba(255, 255, 255, 0.70), transparent 60%),
-    radial-gradient(1px   1px   at 88% 30%, rgba(255, 255, 255, 0.60), transparent 60%),
-    radial-gradient(1.4px 1.4px at 6%  88%, rgba(255, 255, 255, 0.50), transparent 60%),
-    radial-gradient(1.4px 1.4px at 54% 92%, rgba(255, 255, 255, 0.55), transparent 60%),
-    /* Яркая «полярная» звезда */
-    radial-gradient(2.4px 2.4px at 34% 38%,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(94, 234, 212, 0.60) 40%,
-      transparent 70%);
-
-  /* Вертикальные aurora-лучи: высокие эллипсы-градиенты */
-  background-image:
-    radial-gradient(ellipse 3px 180px at 14% 30%, rgba(94, 234, 212, 0.35), transparent 80%),
-    radial-gradient(ellipse 2px 140px at 22% 50%, rgba(34, 197, 94, 0.28), transparent 80%),
-    radial-gradient(ellipse 3px 200px at 38% 25%, rgba(129, 140, 248, 0.30), transparent 80%),
-    radial-gradient(ellipse 2px 160px at 52% 45%, rgba(94, 234, 212, 0.25), transparent 80%),
-    radial-gradient(ellipse 3px 180px at 68% 32%, rgba(34, 197, 94, 0.32), transparent 80%),
-    radial-gradient(ellipse 2px 150px at 82% 55%, rgba(129, 140, 248, 0.28), transparent 80%),
-    radial-gradient(ellipse 3px 190px at 92% 28%, rgba(94, 234, 212, 0.28), transparent 80%),
-    /* Звёзды (8 штук, тайлятся) */
+    /* Семь вертикальных aurora-занавесов — тонкие и высокие */
+    radial-gradient(ellipse 3px 400px at 8% 25%,
+      rgba(94, 234, 212, 0.40) 0%, transparent 75%),
+    radial-gradient(ellipse 2px 320px at 18% 45%,
+      rgba(34, 197, 94, 0.30) 0%, transparent 75%),
+    radial-gradient(ellipse 3px 460px at 32% 22%,
+      rgba(129, 140, 248, 0.35) 0%, transparent 75%),
+    radial-gradient(ellipse 2px 360px at 46% 42%,
+      rgba(94, 234, 212, 0.28) 0%, transparent 75%),
+    radial-gradient(ellipse 3px 420px at 60% 28%,
+      rgba(34, 197, 94, 0.32) 0%, transparent 75%),
+    radial-gradient(ellipse 2px 340px at 74% 48%,
+      rgba(129, 140, 248, 0.28) 0%, transparent 75%),
+    radial-gradient(ellipse 3px 440px at 88% 24%,
+      rgba(94, 234, 212, 0.30) 0%, transparent 75%),
+    /* Звёзды — девять точек разного размера, тайл 900×700 */
     radial-gradient(1.4px 1.4px at 12% 22%, rgba(255, 255, 255, 0.85), transparent 60%),
     radial-gradient(1px   1px   at 28% 68%, rgba(255, 255, 255, 0.55), transparent 60%),
     radial-gradient(1.8px 1.8px at 44% 14%, rgba(255, 255, 255, 0.75), transparent 60%),
@@ -147,13 +125,17 @@
       transparent 70%);
 
   background-size:
-    100% 100%, 100% 100%, 100% 100%,
     100% 100%, 100% 100%, 100% 100%, 100% 100%,
+    100% 100%, 100% 100%, 100% 100%,
     900px 700px, 900px 700px, 900px 700px, 900px 700px,
-    900px 700px, 900px 700px, 900px 700px, 900px 700px, 900px 700px;
+    900px 700px, 900px 700px, 900px 700px, 900px 700px,
+    900px 700px;
   background-repeat:
-    no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
-    repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat;
+    no-repeat, no-repeat, no-repeat, no-repeat,
+    no-repeat, no-repeat, no-repeat,
+    repeat, repeat, repeat, repeat,
+    repeat, repeat, repeat, repeat,
+    repeat;
 
   opacity: 0.9;
   animation: aurora-twinkle 9s ease-in-out infinite alternate;
@@ -775,13 +757,13 @@ body:has(.theme-key-aurora) .install-platform-item[data-selected] {
 @media (max-width: 1023px) {
   /* Волну замедляем ещё сильнее */
   .theme-key-aurora.app-shell::before {
-    animation-duration: 320s;
+    animation-duration: 340s;
   }
 
-  /* Звёзды реже и менее яркие */
+  /* Лучи и звёзды — тише и без пульсации */
   .theme-key-aurora.app-shell::after {
     opacity: 0.65;
-    animation-duration: 14s;
+    animation: none;
   }
 
   /* Падающие звёзды выключаем */
@@ -796,7 +778,7 @@ body:has(.theme-key-aurora) .install-platform-item[data-selected] {
     display: none !important;
   }
 
-  /* Активный пункт — мягкая подсветка, без левой полосы */
+  /* Активный пункт — мягкая подсветка без левой полосы */
   .theme-key-aurora .app-nav-item.active,
   .theme-key-aurora .app-nav-item.is-active,
   .theme-key-aurora .bottom-nav button.active {
@@ -806,7 +788,7 @@ body:has(.theme-key-aurora) .install-platform-item[data-selected] {
     border-radius: 12px;
   }
 
-  /* Панели — меньше blur */
+  /* Меньше blur для панелей */
   .theme-key-aurora .app-card,
   .theme-key-aurora .app-panel {
     -webkit-backdrop-filter: blur(14px) saturate(120%);
