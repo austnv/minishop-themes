@@ -7,7 +7,7 @@
   "enabled": true,
   "default": false,
   "use_primary_accent": true,
-  "use_in_admin": false,
+  "use_in_admin": true,
   "assets_version": 1,
   "css_file": "style.css",
   "active_variant": "dark",
