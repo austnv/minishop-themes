@@ -1,20 +1,33 @@
 # 🌊 Aurora — Полярное сияние
 
-Спокойная, гипнотическая тема в духе ночного неба над Исландией. Волны полярного сияния медленно текут по горизонтали, звёзды мерцают, панели — матовое стекло.
+Спокойная, гипнотическая тема в духе ночного неба над Исландией. Волны полярного сияния медленно текут по горизонту, вертикальные aurora-лучи подсвечивают небо, звёзды мерцают, падающие звёзды прочерчивают диагонали, а панели выполнены в стиле матового стекла.
 
 ## 📸 Превью
 
-![Aurora preview](./preview.webp)
+![Aurora preview](./preview.png)
 
 ## ✨ Особенности
 
-- **Живое полярное сияние** — два слоя волн, нарисованных через `mask-image: radial-gradient()`, движутся по горизонтали в разные стороны. Скорость 180s и 300s на цикл — эффект «дыхания».
-- **Звёздное небо** — меньше звёзд, чем в Universe, но крупнее (1.2–1.8px) и ярче. Лёгкое мерцание.
-- **Матовое стекло** — `backdrop-filter: blur(24px) saturate(140%)` + низкая прозрачность (0.45–0.55). Фон просвечивает сквозь панели.
-- **Тройной градиент логотипа** — бирюза → зелёный → индиго, `background-clip: text` + плавный сдвиг `background-position`.
-- **Мягкое свечение активных элементов** — пульсирующая точка, `box-shadow: inset`, зелёный градиент слева.
-- **Уважение к `prefers-reduced-motion`** — все анимации отключаются.
-- **Облегчение на мобильных** — второй слой волн убирается, blur снижается, звёздный тайл мельче.
+### Фон
+- **Волна полярного сияния** — слой с многоцветным градиентом (индиго → бирюза → зелёный → бирюза), форма задаётся через `mask-image` из шести смещённых радиальных «горбов». Дрейфует по горизонтали 180s на цикл.
+- **Вертикальные aurora-лучи** — семь высоких эллипсов-градиентов разной высоты и цвета. Дают ощущение настоящих «занавесов» северного сияния.
+- **Звёздное небо** — девять звёзд разного размера и яркости, одна «полярная» с бирюзовым свечением. Лёгкое мерцание 9s.
+- **Две падающие звезды** — диагональные треки со свечением в бирюзе и индиго. Летят раз в 50s и 65s, не синхронно.
+
+### UI
+- **Логотип** — переливающийся градиент бирюза → зелёный → индиго с анимацией `background-position` (12s).
+- **Aurora-край сайдбара** — вертикальная градиентная линия по правому краю.
+- **Активные пункты меню** — левая полоса + пульсирующая бирюзовая точка + внутреннее свечение.
+- **Кнопки** — aurora-градиент + пробегающий блик через `::before`.
+- **Прогресс-бары** — многослойный градиент (бирюза → зелёный → индиго) + сканирующий блеск.
+- **Фокус форм** — aurora-кольцо с внешним свечением.
+- **Карточки** — матовое стекло; при наведении появляется aurora-обводка и мягкое свечение.
+- **Иконки Lucide** — бирюзовое свечение через `drop-shadow`.
+- **Скроллбар** — aurora-градиент на ползунке.
+
+### Доступность и мобильные
+- Все анимации отключаются при `prefers-reduced-motion: reduce`.
+- На `≤ 1023px` волна замедляется, звёзды тускнеют, падающие звёзды и пульсации выключаются, blur снижается.
 
 ## 🎨 Токены
 
@@ -22,67 +35,62 @@
 
 | Токен | Значение | Плашка | Использование |
 |---|---|---|---|
-| `accent` | `#5eead4` | ![#5eead4](https://img.shields.io/badge/-5eead4?style=flat-square) | Главный акцент, ссылки, активные элементы |
-| `accent_secondary` | `#22c55e` | ![#22c55e](https://img.shields.io/badge/-22c55e?style=flat-square) | Середина градиента, прогресс |
-| `accent_tertiary` | `#818cf8` | ![#818cf8](https://img.shields.io/badge/-818cf8?style=flat-square) | Конец градиента, info-состояния |
-| `bg_base` | `#050a14` | ![#050a14](https://img.shields.io/badge/-050a14?style=flat-square) | Базовый фон |
-| `bg_panel` | `#080e18` (α .55) | ![#080e188C](https://img.shields.io/badge/-080e188c?style=flat-square) | Панели, карточки |
-| `bg_sidebar` | `#080e18` (α .45) | ![#080e1873](https://img.shields.io/badge/-080e1873?style=flat-square) | Сайдбар |
-| `bg_elevated` | `#0e1624` (α .75) | ![#0e1624BF](https://img.shields.io/badge/-0e1624bf?style=flat-square) | Модалки, дропдауны |
+| `accent` | `#5eead4` | ![#5eead4](https://img.shields.io/badge/-5eead4?style=flat-square) | Главный акцент, ссылки, активные элементы, кнопки |
+| `bg` | `#050a14` | ![#050a14](https://img.shields.io/badge/-050a14?style=flat-square) | Ночной фон |
+| `panel` | `#0a1220` | ![#0a1220](https://img.shields.io/badge/-0a1220?style=flat-square) | Основные панели |
+| `panel_2` | `#0e1624` | ![#0e1624](https://img.shields.io/badge/-0e1624?style=flat-square) | Вторичные поверхности |
+| `panel_3` | `#080e18` | ![#080e18](https://img.shields.io/badge/-080e18?style=flat-square) | Сайдбар, dropdown |
+| `blue` | `#818cf8` | ![#818cf8](https://img.shields.io/badge/-818cf8?style=flat-square) | Индиго для градиентов и info-состояний |
+| `border` | `#5eead4` (α .12) | ![#5eead41F](https://img.shields.io/badge/-5eead41f?style=flat-square) | Обычные границы |
+| `border_strong` | `#5eead4` (α .25) | ![#5eead440](https://img.shields.io/badge/-5eead440?style=flat-square) | Активные границы |
 
 ### Текст и состояния
 
 | Токен | Значение | Плашка | Использование |
 |---|---|---|---|
-| `text_primary` | `#e2e8f0` | ![#e2e8f0](https://img.shields.io/badge/-e2e8f0?style=flat-square) | Основной текст |
-| `text_secondary` | `#94a3b8` | ![#94a3b8](https://img.shields.io/badge/-94a3b8?style=flat-square) | Второстепенный текст |
-| `text_muted` | `#64748b` | ![#64748b](https://img.shields.io/badge/-64748b?style=flat-square) | Placeholder, подписи |
-| `border` | `#5eead4` (α .12) | ![#5eead41F](https://img.shields.io/badge/-5eead41f?style=flat-square) | Границы панелей |
-| `border_strong` | `#5eead4` (α .25) | ![#5eead440](https://img.shields.io/badge/-5eead440?style=flat-square) | Активные границы |
-| `success` | `#22c55e` | ![#22c55e](https://img.shields.io/badge/-22c55e?style=flat-square) | Успех |
-| `warning` | `#fbbf24` | ![#fbbf24](https://img.shields.io/badge/-fbbf24?style=flat-square) | Предупреждение |
-| `danger` | `#f87171` | ![#f87171](https://img.shields.io/badge/-f87171?style=flat-square) | Ошибка |
-| `info` | `#818cf8` | ![#818cf8](https://img.shields.io/badge/-818cf8?style=flat-square) | Информация |
+| `text` | `#e2e8f0` | ![#e2e8f0](https://img.shields.io/badge/-e2e8f0?style=flat-square) | Основной текст |
+| `muted` | `#94a3b8` | ![#94a3b8](https://img.shields.io/badge/-94a3b8?style=flat-square) | Второстепенный текст |
+| `dim` | `#64748b` | ![#64748b](https://img.shields.io/badge/-64748b?style=flat-square) | Placeholder, подписи |
+| `danger` | `#f87171` | ![#f87171](https://img.shields.io/badge/-f87171?style=flat-square) | Ошибки |
 
 ## 🎨 Палитра
 
 | Цвет | HEX | Плашка | Где встречается |
 |---|---|---|---|
-| Бирюзовый | `#5eead4` | ![#5eead4](https://img.shields.io/badge/-5eead4?style=flat-square) | Акцент, ссылки, кнопки, активный пункт |
-| Светлая бирюза | `#7df1dc` | ![#7df1dc](https://img.shields.io/badge/-7df1dc?style=flat-square) | Hover ссылок, скроллбар |
-| Зелёный | `#22c55e` | ![#22c55e](https://img.shields.io/badge/-22c55e?style=flat-square) | Градиент, success, прогресс |
-| Светлый зелёный | `#34d973` | ![#34d973](https://img.shields.io/badge/-34d973?style=flat-square) | Hover скроллбара |
-| Индиго | `#818cf8` | ![#818cf8](https://img.shields.io/badge/-818cf8?style=flat-square) | Конец градиента, info |
+| Бирюза (accent) | `#5eead4` | ![#5eead4](https://img.shields.io/badge/-5eead4?style=flat-square) | Акцент везде: волны, логотип, кнопки, активные элементы |
+| Светлая бирюза | `#7df1dc` | ![#7df1dc](https://img.shields.io/badge/-7df1dc?style=flat-square) | Hover ссылок |
+| Зелёный | `#22c55e` | ![#22c55e](https://img.shields.io/badge/-22c55e?style=flat-square) | Середина градиентов, средняя часть волны |
+| Индиго | `#818cf8` | ![#818cf8](https://img.shields.io/badge/-818cf8?style=flat-square) | Верхняя часть волны, конец градиента |
+| Фиолет | `#a78bfa` | ![#a78bfa](https://img.shields.io/badge/-a78bfa?style=flat-square) | Зарезервирован для расширения |
 | Ночной фон | `#050a14` | ![#050a14](https://img.shields.io/badge/-050a14?style=flat-square) | Базовый фон |
-| Панель | `#080e18` | ![#080e18](https://img.shields.io/badge/-080e18?style=flat-square) | Панели, карточки |
-| Возвышенный | `#0e1624` | ![#0e1624](https://img.shields.io/badge/-0e1624?style=flat-square) | Модалки |
+| Панель | `#0a1220` | ![#0a1220](https://img.shields.io/badge/-0a1220?style=flat-square) | Карточки, панели |
+| Панель-2 | `#0e1624` | ![#0e1624](https://img.shields.io/badge/-0e1624?style=flat-square) | Вторичные поверхности |
+| Панель-3 | `#080e18` | ![#080e18](https://img.shields.io/badge/-080e18?style=flat-square) | Сайдбар, dropdown |
 | Текст | `#e2e8f0` | ![#e2e8f0](https://img.shields.io/badge/-e2e8f0?style=flat-square) | Основной текст |
-| Текст мягкий | `#94a3b8` | ![#94a3b8](https://img.shields.io/badge/-94a3b8?style=flat-square) | Второстепенный текст |
+| Текст мягкий | `#94a3b8` | ![#94a3b8](https://img.shields.io/badge/-94a3b8?style=flat-square) | Второстепенный |
 | Текст приглушённый | `#64748b` | ![#64748b](https://img.shields.io/badge/-64748b?style=flat-square) | Placeholder |
-| Жёлтый | `#fbbf24` | ![#fbbf24](https://img.shields.io/badge/-fbbf24?style=flat-square) | Warning |
-| Красный | `#f87171` | ![#f87171](https://img.shields.io/badge/-f87171?style=flat-square) | Danger |
+| Красный | `#f87171` | ![#f87171](https://img.shields.io/badge/-f87171?style=flat-square) | Ошибки |
 
 ## 🎬 Градиенты
 
 | Название | CSS | Где применяется |
 |---|---|---|
-| Aurora (основной) | `linear-gradient(135deg, #5eead4 0%, #22c55e 35%, #818cf8 70%, #5eead4 100%)` | Акценты, логотип |
-| Кнопка primary | `linear-gradient(135deg, #5eead4 0%, #22c55e 100%)` | `.btn-primary` |
-| Прогресс | `linear-gradient(90deg, #5eead4 0%, #22c55e 60%, #818cf8 100%)` | Заливка `.progress` |
-| Активный пункт | `linear-gradient(90deg, rgba(94,234,212,0.14) 0%, rgba(34,197,94,0.06) 60%, transparent 100%)` | `.sidebar-item.active` |
-| Скроллбар | `linear-gradient(180deg, #5eead4, #22c55e)` | Thumb |
-| Волна сияния 1 | `linear-gradient(180deg, transparent 0%, rgba(94,234,212,0.14) 22%, rgba(34,197,94,0.10) 42%, rgba(129,140,248,0.07) 62%, transparent 88%)` | `.aurora-waves` |
-| Волна сияния 2 | `linear-gradient(180deg, transparent 8%, rgba(129,140,248,0.10) 28%, rgba(94,234,212,0.07) 52%, rgba(34,197,94,0.05) 72%, transparent 92%)` | `.aurora-waves-2` |
+| Aurora (основной) | `linear-gradient(270deg, #5eead4, #22c55e, #818cf8, #22c55e, #5eead4)` | Логотип |
+| Волна сияния | `linear-gradient(180deg, rgba(129,140,248,0.06), rgba(94,234,212,0.16), rgba(34,197,94,0.20), rgba(94,234,212,0.14), rgba(129,140,248,0.07))` | `.app-shell::before` |
+| Кнопка primary | `linear-gradient(135deg, #5eead4, #22c55e, #5eead4)` | `.btn-primary` |
+| Прогресс | `linear-gradient(90deg, #5eead4, #22c55e, #5eead4, #818cf8)` | Заливка |
+| Aurora-край сайдбара | `linear-gradient(180deg, transparent, rgba(94,234,212,0.35), rgba(34,197,94,0.55), rgba(129,140,248,0.35), transparent)` | `.app-sidebar::after` |
+| Активный пункт | `linear-gradient(90deg, rgba(94,234,212,0.18), rgba(34,197,94,0.06), transparent)` | `.app-nav-item.active` |
 
 ## 🔤 Шрифты
 
 | Роль | Семейство | Fallback | Пример |
 |---|---|---|---|
-| Sans (UI) | Inter | system-ui, sans-serif | Основной текст |
-| Logo | Inter | system-ui, sans-serif | Логотип, заголовки |
-| Mono | JetBrains Mono | ui-monospace, monospace | Код, цифры |
+| Sans (UI) | Inter | -apple-system, BlinkMacSystemFont, Segoe UI, Arial | Основной текст |
+| Logo | Inter | Segoe UI, sans-serif | Логотип, заголовки |
+| Mono | JetBrains Mono | ui-monospace, Menlo, Consolas | Код, цифры |
 
-Шрифты подтягиваются MiniShop через токены `font_sans`, `font_logo`, `font_mono`. В CSS используется `var(--font-ui)` — не `var(--font-sans)`.
+Шрифты подтягиваются MiniShop через токены `font_sans`, `font_logo`, `font_mono`. В CSS используется `var(--font-ui)`.
 
 ## 📁 Структура
 
@@ -91,13 +99,14 @@ themes/aurora/
 ├── LICENSE
 ├── README.md
 ├── theme.json
+├── theme-package.json
 ├── style.css
-└── preview.webp
+└── preview.png
 ```
 
 ## 🌗 Варианты
 
-**Один вариант — `dark`.** Aurora концептуально — ночное небо. Light-вариант разрушил бы идею полярного сияния и добавил бы пользователю лишний переключатель. Тема одинаково хороша и днём, и ночью благодаря тёмному фону.
+**Один вариант — `dark`.** Aurora концептуально — ночное небо над Исландией. Полярное сияние видно только в темноте. Light-вариант разрушил бы идею и добавил бы пользователю лишний переключатель.
 
 ## ⚙️ Установка
 

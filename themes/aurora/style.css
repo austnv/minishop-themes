@@ -1,65 +1,87 @@
 /* ============================================================
-   Aurora — Полярное сияние для MiniShop
-   Селекторы начинаются с .theme-key-aurora
-   Внешние элементы — через body:has(.theme-key-aurora)
-   Никаких url(), @font-face, @import, data:, color-mix()
+   AURORA — Полярное сияние для MiniShop
+   v2 — расширенная сборка
+   ------------------------------------------------------------
+   - Четырёхслойный фон: сияние-волна + звёзды + 2 падающие звезды
+   - Aurora-свечение на UI: сайдбар, кнопки, ссылки, фокусы
+   - Анимированный градиент логотипа
+   - Пульсирующие точки активного меню
+   - Многослойные прогресс-бары со сканирующим блеском
+   - Уважение prefers-reduced-motion, облегчение на мобильных
+   ------------------------------------------------------------
+   Только rgba() и hex. Никаких url(), @font-face, @import,
+   color-mix(), data:, путей с ..
    ============================================================ */
 
-/* ---------- 1. Якорь темы ---------- */
+/* ---------- 0. Якорь и переменные темы ---------- */
+.theme-key-aurora.app-shell,
 .theme-key-aurora {
-  background: var(--bg);
+  --aurora-teal: #5eead4;
+  --aurora-green: #22c55e;
+  --aurora-indigo: #818cf8;
+  --aurora-violet: #a78bfa;
+  --aurora-bg: #050a14;
+  --aurora-glow: rgba(94, 234, 212, 0.35);
+  --aurora-glow-strong: rgba(94, 234, 212, 0.55);
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.theme-key-aurora.app-shell {
+  background: var(--bg) !important;
   color: var(--text);
   font-family: var(--font-ui);
+  position: relative;
+  isolation: isolate;
 }
 
-/* ---------- 2. Фон: ночное небо + полярное сияние ---------- */
-.theme-key-aurora .aurora-bg {
+/* ============================================================
+   1. ФОН — слой 1: волна полярного сияния (::before)
+   ============================================================ */
+.theme-key-aurora.app-shell::before {
+  content: '';
   position: fixed;
   inset: 0;
+  z-index: -2;
   pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-  background:
-    radial-gradient(
-      ellipse 120% 80% at 50% 0%,
-      rgba(129, 140, 248, 0.10) 0%,
-      transparent 60%
-    ),
-    radial-gradient(
-      ellipse 100% 60% at 50% 100%,
-      rgba(94, 234, 212, 0.06) 0%,
-      transparent 70%
-    ),
-    var(--bg);
-}
 
-/* Волна сияния, слой 1 */
-.theme-key-aurora .aurora-waves {
-  position: absolute;
-  left: -200px;
-  right: -200px;
-  top: 0;
-  height: 70vh;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(94, 234, 212, 0.14) 22%,
-    rgba(94, 234, 212, 0.10) 42%,
-    rgba(129, 140, 248, 0.07) 62%,
-    transparent 88%
-  );
+  /* Многослойный aurora-градиент: индиго → бирюза → зелёный → бирюза */
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(129, 140, 248, 0.06) 10%,
+      rgba(94, 234, 212, 0.16) 25%,
+      rgba(34, 197, 94, 0.20) 42%,
+      rgba(94, 234, 212, 0.14) 56%,
+      rgba(129, 140, 248, 0.07) 72%,
+      transparent 88%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(94, 234, 212, 0.05) 6%,
+      rgba(129, 140, 248, 0.05) 12%,
+      transparent 22%
+    );
+  background-size: 100% 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+
+  /* Форма волны: шесть смещённых радиальных «горбов» */
   -webkit-mask-image:
-    radial-gradient(circle at 10% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 30% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 50% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 70% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 90% 100%, transparent 34%, #000 36%);
+    radial-gradient(circle at 8% 100%, transparent 32%, #000 34%),
+    radial-gradient(circle at 26% 100%, transparent 34%, #000 36%),
+    radial-gradient(circle at 44% 100%, transparent 32%, #000 34%),
+    radial-gradient(circle at 62% 100%, transparent 34%, #000 36%),
+    radial-gradient(circle at 80% 100%, transparent 32%, #000 34%),
+    radial-gradient(circle at 98% 100%, transparent 34%, #000 36%);
   mask-image:
-    radial-gradient(circle at 10% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 30% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 50% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 70% 100%, transparent 34%, #000 36%),
-    radial-gradient(circle at 90% 100%, transparent 34%, #000 36%);
+    radial-gradient(circle at 8% 100%, transparent 32%, #000 34%),
+    radial-gradient(circle at 26% 100%, transparent 34%, #000 36%),
+    radial-gradient(circle at 44% 100%, transparent 32%, #000 34%),
+    radial-gradient(circle at 62% 100%, transparent 34%, #000 36%),
+    radial-gradient(circle at 80% 100%, transparent 32%, #000 34%),
+    radial-gradient(circle at 98% 100%, transparent 34%, #000 36%);
   -webkit-mask-repeat: repeat-x;
   mask-repeat: repeat-x;
   -webkit-mask-size: 400px 200px;
@@ -70,68 +92,71 @@
   will-change: mask-position;
 }
 
-/* Волна сияния, слой 2 */
-.theme-key-aurora .aurora-waves-2 {
-  position: absolute;
-  left: -300px;
-  right: -300px;
-  top: 8vh;
-  height: 80vh;
-  background: linear-gradient(
-    180deg,
-    transparent 8%,
-    rgba(129, 140, 248, 0.10) 28%,
-    rgba(94, 234, 212, 0.07) 52%,
-    rgba(94, 234, 212, 0.05) 72%,
-    transparent 92%
-  );
-  -webkit-mask-image:
-    radial-gradient(circle at 15% 100%, transparent 38%, #000 40%),
-    radial-gradient(circle at 40% 100%, transparent 38%, #000 40%),
-    radial-gradient(circle at 65% 100%, transparent 38%, #000 40%),
-    radial-gradient(circle at 90% 100%, transparent 38%, #000 40%);
-  mask-image:
-    radial-gradient(circle at 15% 100%, transparent 38%, #000 40%),
-    radial-gradient(circle at 40% 100%, transparent 38%, #000 40%),
-    radial-gradient(circle at 65% 100%, transparent 38%, #000 40%),
-    radial-gradient(circle at 90% 100%, transparent 38%, #000 40%);
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-  -webkit-mask-size: 600px 260px;
-  mask-size: 600px 260px;
-  -webkit-mask-position: 0 0;
-  mask-position: 0 0;
-  animation: aurora-drift-2 300s linear infinite;
-  will-change: mask-position;
-}
-
 @keyframes aurora-drift {
   0%   { -webkit-mask-position: 0 0;      mask-position: 0 0; }
   100% { -webkit-mask-position: -400px 0; mask-position: -400px 0; }
 }
 
-@keyframes aurora-drift-2 {
-  0%   { -webkit-mask-position: 0 0;      mask-position: 0 0; }
-  100% { -webkit-mask-position: 600px 0;  mask-position: 600px 0; }
-}
-
-/* Звёзды */
-.theme-key-aurora .aurora-stars {
-  position: absolute;
+/* ============================================================
+   2. ФОН — слой 2: звёзды + вертикальные aurora-лучи (::after)
+   ============================================================ */
+.theme-key-aurora.app-shell::after {
+  content: '';
+  position: fixed;
   inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  /* Звёзды: 8 тайловых точек разного размера и яркости */
   background-image:
-    radial-gradient(1.6px 1.6px at 12% 22%, rgba(255, 255, 255, 0.85), transparent 60%),
-    radial-gradient(1.2px 1.2px at 28% 68%, rgba(255, 255, 255, 0.60), transparent 60%),
+    radial-gradient(1.4px 1.4px at 12% 22%, rgba(255, 255, 255, 0.85), transparent 60%),
+    radial-gradient(1px   1px   at 28% 68%, rgba(255, 255, 255, 0.55), transparent 60%),
     radial-gradient(1.8px 1.8px at 44% 14%, rgba(255, 255, 255, 0.75), transparent 60%),
-    radial-gradient(1.2px 1.2px at 61% 48%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(1px   1px   at 61% 48%, rgba(255, 255, 255, 0.50), transparent 60%),
     radial-gradient(1.6px 1.6px at 76% 82%, rgba(255, 255, 255, 0.70), transparent 60%),
-    radial-gradient(1.2px 1.2px at 88% 30%, rgba(255, 255, 255, 0.60), transparent 60%),
-    radial-gradient(1.4px 1.4px at 6% 88%, rgba(255, 255, 255, 0.50), transparent 60%),
-    radial-gradient(1.4px 1.4px at 54% 92%, rgba(255, 255, 255, 0.55), transparent 60%);
-  background-repeat: repeat;
-  background-size: 900px 700px;
-  opacity: 0.95;
-  animation: aurora-twinkle 8s ease-in-out infinite alternate;
+    radial-gradient(1px   1px   at 88% 30%, rgba(255, 255, 255, 0.60), transparent 60%),
+    radial-gradient(1.4px 1.4px at 6%  88%, rgba(255, 255, 255, 0.50), transparent 60%),
+    radial-gradient(1.4px 1.4px at 54% 92%, rgba(255, 255, 255, 0.55), transparent 60%),
+    /* Яркая «полярная» звезда */
+    radial-gradient(2.4px 2.4px at 34% 38%,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(94, 234, 212, 0.60) 40%,
+      transparent 70%);
+
+  /* Вертикальные aurora-лучи: высокие эллипсы-градиенты */
+  background-image:
+    radial-gradient(ellipse 3px 180px at 14% 30%, rgba(94, 234, 212, 0.35), transparent 80%),
+    radial-gradient(ellipse 2px 140px at 22% 50%, rgba(34, 197, 94, 0.28), transparent 80%),
+    radial-gradient(ellipse 3px 200px at 38% 25%, rgba(129, 140, 248, 0.30), transparent 80%),
+    radial-gradient(ellipse 2px 160px at 52% 45%, rgba(94, 234, 212, 0.25), transparent 80%),
+    radial-gradient(ellipse 3px 180px at 68% 32%, rgba(34, 197, 94, 0.32), transparent 80%),
+    radial-gradient(ellipse 2px 150px at 82% 55%, rgba(129, 140, 248, 0.28), transparent 80%),
+    radial-gradient(ellipse 3px 190px at 92% 28%, rgba(94, 234, 212, 0.28), transparent 80%),
+    /* Звёзды (8 штук, тайлятся) */
+    radial-gradient(1.4px 1.4px at 12% 22%, rgba(255, 255, 255, 0.85), transparent 60%),
+    radial-gradient(1px   1px   at 28% 68%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(1.8px 1.8px at 44% 14%, rgba(255, 255, 255, 0.75), transparent 60%),
+    radial-gradient(1px   1px   at 61% 48%, rgba(255, 255, 255, 0.50), transparent 60%),
+    radial-gradient(1.6px 1.6px at 76% 82%, rgba(255, 255, 255, 0.70), transparent 60%),
+    radial-gradient(1px   1px   at 88% 30%, rgba(255, 255, 255, 0.60), transparent 60%),
+    radial-gradient(1.4px 1.4px at 6%  88%, rgba(255, 255, 255, 0.50), transparent 60%),
+    radial-gradient(1.4px 1.4px at 54% 92%, rgba(255, 255, 255, 0.55), transparent 60%),
+    radial-gradient(2.4px 2.4px at 34% 38%,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(94, 234, 212, 0.60) 40%,
+      transparent 70%);
+
+  background-size:
+    100% 100%, 100% 100%, 100% 100%,
+    100% 100%, 100% 100%, 100% 100%, 100% 100%,
+    900px 700px, 900px 700px, 900px 700px, 900px 700px,
+    900px 700px, 900px 700px, 900px 700px, 900px 700px, 900px 700px;
+  background-repeat:
+    no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
+    repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat;
+
+  opacity: 0.9;
+  animation: aurora-twinkle 9s ease-in-out infinite alternate;
 }
 
 @keyframes aurora-twinkle {
@@ -139,164 +164,346 @@
   100% { opacity: 1; }
 }
 
-/* ---------- 3. Стеклянные панели ---------- */
-.theme-key-aurora .panel,
-.theme-key-aurora .card,
-.theme-key-aurora .modal-content,
-.theme-key-aurora .dropdown-menu {
-  background: var(--panel);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
-  backdrop-filter: blur(24px) saturate(140%);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+/* ============================================================
+   3. ПАДАЮЩИЕ ЗВЁЗДЫ — две штуки, летят по диагонали
+   ============================================================ */
+.theme-key-aurora .app-main-content::before {
+  content: '';
+  position: fixed;
+  top: 12%;
+  right: 8%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffffff;
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 0 6px 2px rgba(255, 255, 255, 0.85),
+    0 0 20px 6px rgba(94, 234, 212, 0.50);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  animation: aurora-shoot 50s linear infinite;
+  animation-delay: 8s;
 }
 
-.theme-key-aurora .sidebar,
-.theme-key-aurora .nav-sidebar {
-  background: var(--panel-3);
-  -webkit-backdrop-filter: blur(28px) saturate(150%);
-  backdrop-filter: blur(28px) saturate(150%);
-  border-right: 1px solid var(--border);
+.theme-key-aurora .app-main-content::after {
+  content: '';
+  position: fixed;
+  top: 35%;
+  right: 32%;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow:
+    0 0 5px 2px rgba(255, 255, 255, 0.70),
+    0 0 16px 5px rgba(129, 140, 248, 0.40);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  animation: aurora-shoot 65s linear infinite;
+  animation-delay: 32s;
 }
 
-/* ---------- 4. Логотип: тройной градиент ---------- */
-.theme-key-aurora .logo,
-.theme-key-aurora .brand,
-.theme-key-aurora .app-title {
+@keyframes aurora-shoot {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(35deg);
+    opacity: 0;
+  }
+  2% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(-1800px, 900px, 0) rotate(35deg);
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   4. САЙДБАР — часть космоса + aurora-край
+   ============================================================ */
+.theme-key-aurora .app-sidebar,
+.theme-key-aurora .admin-sidebar {
+  background: rgba(8, 14, 24, 0.45) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(140%);
+  backdrop-filter: blur(26px) saturate(140%);
+  border-right: 1px solid rgba(94, 234, 212, 0.10) !important;
+  box-shadow: none !important;
+  position: relative;
+}
+
+/* Aurora-линия на правом краю сайдбара */
+.theme-key-aurora .app-sidebar::after,
+.theme-key-aurora .admin-sidebar::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  right: 0;
+  bottom: 10%;
+  width: 1px;
   background: linear-gradient(
-    90deg,
-    var(--accent) 0%,
-    var(--accent) 30%,
-    var(--blue) 55%,
-    var(--accent) 80%,
-    var(--accent) 100%
+    180deg,
+    transparent 0%,
+    rgba(94, 234, 212, 0.35) 20%,
+    rgba(34, 197, 94, 0.55) 50%,
+    rgba(129, 140, 248, 0.35) 80%,
+    transparent 100%
+  );
+  pointer-events: none;
+  filter: blur(0.5px);
+}
+
+/* ============================================================
+   5. ЛОГОТИП — тройной переливающийся градиент
+   ============================================================ */
+.theme-key-aurora .app-sidebar h1,
+.theme-key-aurora .app-sidebar [class*="brand"] strong,
+.theme-key-aurora .app-sidebar [class*="brand"] span,
+.theme-key-aurora .app-sidebar [class*="logo"] strong,
+.theme-key-aurora .app-sidebar [class*="logo-text"],
+.theme-key-aurora .admin-sidebar-brand strong,
+.theme-key-aurora .brand-row strong,
+.theme-key-aurora .login-brand h1,
+.theme-key-aurora .app-logo-text {
+  background: linear-gradient(
+    270deg,
+    #5eead4 0%,
+    #22c55e 25%,
+    #818cf8 50%,
+    #22c55e 75%,
+    #5eead4 100%
   );
   background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  animation: aurora-logo-shift 14s ease-in-out infinite;
+  font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 1.5px;
+  animation: aurora-shimmer 12s linear infinite;
 }
 
-@keyframes aurora-logo-shift {
+@keyframes aurora-shimmer {
   0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
 }
 
-/* ---------- 5. Активные элементы меню ---------- */
-.theme-key-aurora .sidebar-item,
-.theme-key-aurora .nav-item {
+/* Иконка логотипа мягко светится */
+.theme-key-aurora .app-sidebar svg,
+.theme-key-aurora .app-sidebar img {
+  filter: drop-shadow(0 0 8px rgba(94, 234, 212, 0.45));
+}
+
+.theme-key-aurora .app-logo img,
+.theme-key-aurora .app-logo svg,
+.theme-key-aurora .login-brand svg {
+  filter:
+    drop-shadow(0 0 14px rgba(94, 234, 212, 0.50))
+    drop-shadow(0 0 4px rgba(94, 234, 212, 0.80));
+  animation: aurora-breathe 4s ease-in-out infinite;
+}
+
+@keyframes aurora-breathe {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 12px rgba(94, 234, 212, 0.40))
+      drop-shadow(0 0 4px rgba(94, 234, 212, 0.70));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 20px rgba(94, 234, 212, 0.65))
+      drop-shadow(0 0 8px rgba(94, 234, 212, 0.95));
+  }
+}
+
+/* ============================================================
+   6. НАВИГАЦИЯ — активные пункты с aurora-свечением
+   ============================================================ */
+.theme-key-aurora .app-nav-item,
+.theme-key-aurora .bottom-nav button,
+.theme-key-aurora .admin-nav-item {
+  border-radius: 12px;
   position: relative;
-  border-radius: calc(var(--radius) - 6px);
-  transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.theme-key-aurora .sidebar-item:hover,
-.theme-key-aurora .nav-item:hover {
+.theme-key-aurora .app-nav-item:hover,
+.theme-key-aurora .bottom-nav button:hover,
+.theme-key-aurora .admin-nav-item:hover {
   background: rgba(94, 234, 212, 0.06);
   color: var(--accent);
 }
 
-.theme-key-aurora .sidebar-item.active,
-.theme-key-aurora .nav-item.active {
-  border-left: 3px solid var(--accent);
+.theme-key-aurora .app-nav-item.active,
+.theme-key-aurora .app-nav-item.is-active,
+.theme-key-aurora .app-nav-item[data-active="true"],
+.theme-key-aurora .bottom-nav button.active,
+.theme-key-aurora .bottom-nav button.is-active,
+.theme-key-aurora .admin-nav-item.active,
+.theme-key-aurora .admin-nav-item.is-active {
   background: linear-gradient(
     90deg,
-    rgba(94, 234, 212, 0.14) 0%,
-    rgba(94, 234, 212, 0.06) 60%,
+    rgba(94, 234, 212, 0.18),
+    rgba(34, 197, 94, 0.06) 60%,
     transparent 100%
-  );
-  color: var(--text);
+  ) !important;
+  border-left: 3px solid var(--accent);
   box-shadow:
-    inset 0 0 24px rgba(94, 234, 212, 0.06),
+    inset 0 0 20px rgba(94, 234, 212, 0.12),
     0 0 14px rgba(94, 234, 212, 0.10);
+  color: var(--accent);
 }
 
-.theme-key-aurora .sidebar-item.active::after,
-.theme-key-aurora .nav-item.active::after {
+/* Пульсирующая aurora-точка справа */
+.theme-key-aurora .app-nav-item.active::after,
+.theme-key-aurora .app-nav-item.is-active::after,
+.theme-key-aurora .app-nav-item[data-active="true"]::after,
+.theme-key-aurora .bottom-nav button.active::after {
   content: '';
   position: absolute;
   right: 12px;
   top: 50%;
-  transform: translateY(-50%);
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
-  animation: aurora-pulse 3.2s ease-in-out infinite;
+  box-shadow: 0 0 10px 2px rgba(94, 234, 212, 0.65);
+  animation: aurora-pulse 2.8s ease-in-out infinite;
 }
 
 @keyframes aurora-pulse {
-  0%, 100% { opacity: 0.55; box-shadow: 0 0 6px var(--accent); }
-  50%      { opacity: 1;    box-shadow: 0 0 16px var(--accent); }
+  0%, 100% {
+    opacity: 0.55;
+    transform: translateY(-50%) scale(0.85);
+    box-shadow: 0 0 6px 1px rgba(94, 234, 212, 0.45);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.20);
+    box-shadow: 0 0 16px 3px rgba(94, 234, 212, 0.75);
+  }
 }
 
-/* ---------- 6. Кнопки ---------- */
-.theme-key-aurora .btn-primary {
+/* ============================================================
+   7. КНОПКИ — aurora-градиент + пробегающий блеск
+   ============================================================ */
+.theme-key-aurora .btn-primary,
+.theme-key-aurora button[type="submit"],
+.theme-key-aurora .admin-btn-primary {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent) 100%);
-  color: var(--bg);
+  background: linear-gradient(135deg, #5eead4 0%, #22c55e 55%, #5eead4 100%) !important;
+  background-size: 200% 200% !important;
+  border: none !important;
+  color: #050a14 !important;
   font-weight: 600;
-  border: none;
-  border-radius: calc(var(--radius) - 6px);
-  box-shadow: 0 4px 16px rgba(94, 234, 212, 0.20);
-  transition: transform 0.2s ease, box-shadow 0.25s ease;
+  box-shadow:
+    0 4px 16px rgba(94, 234, 212, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  transition:
+    box-shadow 0.35s ease,
+    transform 0.2s ease,
+    background-position 0.6s ease;
 }
 
-.theme-key-aurora .btn-primary:hover {
+.theme-key-aurora .btn-primary:hover:not(:disabled) {
+  background-position: 100% 100% !important;
+  box-shadow:
+    0 6px 24px rgba(94, 234, 212, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
   transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(94, 234, 212, 0.32);
 }
 
+.theme-key-aurora .btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Пробегающий блик */
 .theme-key-aurora .btn-primary::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: -120%;
-  width: 60%;
-  height: 100%;
+  inset: 0;
   background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.35),
-    transparent
+    120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.40) 50%,
+    transparent 70%
   );
-  transform: skewX(-18deg);
-  transition: left 0.65s ease;
+  transform: translateX(-100%);
+  transition: transform 0.85s ease;
+  pointer-events: none;
 }
 
-.theme-key-aurora .btn-primary:hover::before {
-  left: 130%;
+.theme-key-aurora .btn-primary:hover:not(:disabled)::before {
+  transform: translateX(100%);
 }
 
-.theme-key-aurora .btn-secondary {
-  background: rgba(94, 234, 212, 0.08);
+.theme-key-aurora .btn:not(.btn-primary),
+.theme-key-aurora .admin-btn:not(.admin-btn-primary) {
+  background: rgba(94, 234, 212, 0.04);
+  border: 1px solid rgba(94, 234, 212, 0.18);
   color: var(--accent);
-  border: 1px solid var(--border-strong);
-  border-radius: calc(var(--radius) - 6px);
-  transition: background 0.2s ease, box-shadow 0.25s ease;
+  transition: all 0.3s ease;
 }
 
-.theme-key-aurora .btn-secondary:hover {
-  background: rgba(94, 234, 212, 0.14);
-  box-shadow: 0 0 16px rgba(94, 234, 212, 0.18);
+.theme-key-aurora .btn:not(.btn-primary):hover:not(:disabled),
+.theme-key-aurora .admin-btn:not(.admin-btn-primary):hover:not(:disabled) {
+  background: rgba(94, 234, 212, 0.10);
+  border-color: rgba(94, 234, 212, 0.38);
+  box-shadow: 0 0 14px rgba(94, 234, 212, 0.18);
 }
 
-/* ---------- 7. Ссылки и акценты ---------- */
+/* ============================================================
+   8. ПАНЕЛИ И КАРТОЧКИ — матовое стекло + aurora-край на hover
+   ============================================================ */
+.theme-key-aurora .app-card,
+.theme-key-aurora .app-panel,
+.theme-key-aurora .dialog-card,
+.theme-key-aurora .auth-card,
+.theme-key-aurora .support-overview-card,
+.theme-key-aurora .support-list-card,
+.theme-key-aurora .support-ticket-card,
+.theme-key-aurora .support-conversation-card,
+.theme-key-aurora .support-create-panel,
+.theme-key-aurora .install-step,
+.theme-key-aurora .install-subscription-card,
+.theme-key-aurora .install-qr-wrap,
+.theme-key-aurora .trial-offer-card,
+.theme-key-aurora .subscription-purchase-description,
+.theme-key-aurora .pending-payment-card {
+  background: rgba(10, 18, 32, 0.55) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid rgba(94, 234, 212, 0.10) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.theme-key-aurora .app-card:hover,
+.theme-key-aurora .support-list-card:hover,
+.theme-key-aurora .support-ticket-card:hover {
+  border-color: rgba(94, 234, 212, 0.25) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(94, 234, 212, 0.10),
+    0 0 24px rgba(94, 234, 212, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================================
+   9. ССЫЛКИ И АКЦЕНТЫ
+   ============================================================ */
 .theme-key-aurora a,
 .theme-key-aurora .link {
   color: var(--accent);
   text-decoration: none;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
+  transition: color 0.2s ease, text-shadow 0.25s ease;
 }
 
 .theme-key-aurora a:hover,
@@ -305,147 +512,316 @@
   text-shadow: 0 0 12px rgba(94, 234, 212, 0.55);
 }
 
-.theme-key-aurora .badge-accent {
-  background: rgba(94, 234, 212, 0.12);
-  color: var(--accent);
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  padding: 2px 10px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-/* ---------- 8. Прогресс-бары ---------- */
-.theme-key-aurora .progress {
-  background: rgba(94, 234, 212, 0.08);
-  border-radius: 999px;
+/* ============================================================
+   10. ПРОГРЕСС-БАРЫ — многослойный градиент + сканирующий блеск
+   ============================================================ */
+.theme-key-aurora .progress,
+.theme-key-aurora .progress-bar,
+.theme-key-aurora [role="progressbar"] {
+  position: relative;
+  display: block;
+  height: 10px !important;
+  border-radius: 10px;
+  border: 1px solid rgba(94, 234, 212, 0.18);
   overflow: hidden;
+  background: rgba(94, 234, 212, 0.05) !important;
 }
 
-.theme-key-aurora .progress [style*="width"] {
+.theme-key-aurora .progress > span,
+.theme-key-aurora .progress-bar > span,
+.theme-key-aurora [role="progressbar"] > span,
+.theme-key-aurora .progress [style*="width"],
+.theme-key-aurora .progress-bar [style*="width"] {
   display: block !important;
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 60%, var(--blue) 100%) !important;
-  border-radius: 999px;
-  box-shadow: 0 0 10px rgba(94, 234, 212, 0.45);
-  transition: width 0.4s ease;
+  height: 100% !important;
+  min-width: 12px !important;
+  background: linear-gradient(
+    90deg,
+    #5eead4 0%,
+    #22c55e 45%,
+    #5eead4 70%,
+    #818cf8 100%
+  ) !important;
+  background-size: 200% 100% !important;
+  box-shadow:
+    0 0 12px rgba(94, 234, 212, 0.55),
+    inset 0 0 4px rgba(255, 255, 255, 0.30) !important;
+  border-radius: 10px !important;
+  position: relative;
+  overflow: hidden;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ---------- 9. Формы ---------- */
+.theme-key-aurora .progress > span::after,
+.theme-key-aurora .progress [style*="width"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  animation: aurora-scan 3s ease-in-out infinite;
+}
+
+@keyframes aurora-scan {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================================
+   11. ФОРМЫ — фокус с aurora-кольцом
+   ============================================================ */
 .theme-key-aurora input,
 .theme-key-aurora textarea,
-.theme-key-aurora select {
-  background: rgba(5, 10, 20, 0.65);
+.theme-key-aurora select,
+.theme-key-aurora .input,
+.theme-key-aurora .admin-input {
+  background: rgba(5, 10, 20, 0.60);
   color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: calc(var(--radius) - 6px);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(94, 234, 212, 0.14);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .theme-key-aurora input:focus,
 .theme-key-aurora textarea:focus,
-.theme-key-aurora select:focus {
+.theme-key-aurora select:focus,
+.theme-key-aurora .input:focus,
+.theme-key-aurora .admin-input:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.15);
+  border-color: rgba(94, 234, 212, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(94, 234, 212, 0.15),
+    0 0 16px rgba(94, 234, 212, 0.18);
 }
 
 .theme-key-aurora ::placeholder {
   color: var(--dim);
 }
 
-/* ---------- 10. Скроллбар ---------- */
-.theme-key-aurora ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-.theme-key-aurora ::-webkit-scrollbar-track {
-  background: rgba(5, 10, 20, 0.40);
-}
-
-.theme-key-aurora ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--accent), var(--accent));
+/* ============================================================
+   12. ТАБЛИЦЫ, БЕЙДЖИ
+   ============================================================ */
+.theme-key-aurora .ticket-status-badge,
+.theme-key-aurora .admin-badge {
   border-radius: 999px;
-  border: 2px solid rgba(5, 10, 20, 0.90);
+  border: 1px solid rgba(94, 234, 212, 0.28);
+  background: rgba(94, 234, 212, 0.10);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
+.theme-key-aurora .admin-table thead th,
+.theme-key-aurora table thead th {
+  background: rgba(94, 234, 212, 0.04);
+  color: var(--accent);
+  border-bottom: 1px solid rgba(94, 234, 212, 0.20);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.theme-key-aurora .admin-table tbody tr,
+.theme-key-aurora table tbody tr {
+  border-bottom: 1px solid rgba(94, 234, 212, 0.06);
+  transition: background 0.25s ease;
+}
+
+.theme-key-aurora .admin-table tbody tr:hover,
+.theme-key-aurora table tbody tr:hover {
+  background: rgba(94, 234, 212, 0.05);
+}
+
+/* ============================================================
+   13. ИКОНКИ LUCIDE — aurora-свечение
+   ============================================================ */
+.theme-key-aurora svg.lucide,
+.theme-key-aurora svg[class*="lucide-"] {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+  fill: none !important;
+  stroke-width: 1.7;
+  filter: drop-shadow(0 0 5px rgba(94, 234, 212, 0.40));
+  transition: filter 0.3s ease, stroke 0.3s ease;
+}
+
+.theme-key-aurora .app-nav-item:hover svg.lucide,
+.theme-key-aurora .app-nav-item.active svg.lucide {
+  filter: drop-shadow(0 0 9px rgba(94, 234, 212, 0.75));
+}
+
+.theme-key-aurora .btn-primary svg.lucide,
+.theme-key-aurora .admin-btn-primary svg.lucide,
+.theme-key-aurora .bottom-nav button.active svg.lucide {
+  color: #050a14 !important;
+  stroke: #050a14 !important;
+  filter: drop-shadow(0 0 4px rgba(5, 10, 20, 0.5));
+}
+
+/* ============================================================
+   14. СКРОЛЛБАР
+   ============================================================ */
+.theme-key-aurora ::-webkit-scrollbar { width: 8px; height: 8px; }
+.theme-key-aurora ::-webkit-scrollbar-track { background: transparent; }
+.theme-key-aurora ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(94, 234, 212, 0.35), rgba(34, 197, 94, 0.25));
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
 .theme-key-aurora ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #7df1dc, var(--accent));
+  background: linear-gradient(180deg, rgba(94, 234, 212, 0.65), rgba(34, 197, 94, 0.45));
+  background-clip: padding-box;
 }
 
-/* ---------- 11. Тосты, тултипы, дропдауны ---------- */
-body:has(.theme-key-aurora) .toast,
-body:has(.theme-key-aurora) .tooltip,
-body:has(.theme-key-aurora) .dropdown-menu,
-body:has(.theme-key-aurora) .popover {
-  background: rgba(5, 10, 20, 0.85);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  backdrop-filter: blur(20px) saturate(140%);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: calc(var(--radius) - 4px);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+/* ============================================================
+   15. АНИМАЦИЯ ПОЯВЛЕНИЯ КОНТЕНТА
+   ============================================================ */
+.theme-key-aurora .app-main-content {
+  animation: aurora-appear 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-body:has(.theme-key-aurora) .toast-success {
-  border-color: rgba(34, 197, 94, 0.45);
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
-}
-
-body:has(.theme-key-aurora) .toast-error {
-  border-color: rgba(248, 113, 113, 0.45);
-  box-shadow: 0 0 20px rgba(248, 113, 113, 0.22);
-}
-
-/* ---------- 12. Reduced motion ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .theme-key-aurora .aurora-waves,
-  .theme-key-aurora .aurora-waves-2 {
-    animation: none;
+@keyframes aurora-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+    filter: blur(4px);
   }
-  .theme-key-aurora .aurora-stars {
-    animation: none;
-  }
-  .theme-key-aurora .logo,
-  .theme-key-aurora .brand,
-  .theme-key-aurora .app-title {
-    animation: none;
-    background-position: 0% 50%;
-  }
-  .theme-key-aurora .sidebar-item.active::after,
-  .theme-key-aurora .nav-item.active::after {
-    animation: none;
+  60% { filter: blur(0); }
+  100% {
     opacity: 1;
-    box-shadow: 0 0 10px var(--accent);
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ============================================================
+   16. ВНЕ SHELL — тосты, дропдауны, попапы
+   ============================================================ */
+body:has(.theme-key-aurora) .app-toast {
+  background: rgba(10, 18, 32, 0.94) !important;
+  border: 1px solid rgba(94, 234, 212, 0.24) !important;
+  color: var(--text) !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-radius: 14px;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 0 20px rgba(94, 234, 212, 0.08);
+}
+
+body:has(.theme-key-aurora) .language-select-content,
+body:has(.theme-key-aurora) .admin-select-content,
+body:has(.theme-key-aurora) .install-platform-content,
+body:has(.theme-key-aurora) .support-select-content,
+body:has(.theme-key-aurora) .field-error-tooltip {
+  background: rgba(10, 18, 32, 0.96) !important;
+  border: 1px solid rgba(94, 234, 212, 0.24) !important;
+  color: var(--text) !important;
+  border-radius: 14px;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 0 20px rgba(94, 234, 212, 0.10);
+}
+
+body:has(.theme-key-aurora) .language-select-item[data-highlighted],
+body:has(.theme-key-aurora) .language-select-item[data-selected],
+body:has(.theme-key-aurora) .install-platform-item[data-highlighted],
+body:has(.theme-key-aurora) .install-platform-item[data-selected] {
+  background: rgba(94, 234, 212, 0.14) !important;
+  color: var(--accent) !important;
+}
+
+/* ============================================================
+   17. ДОСТУПНОСТЬ — prefers-reduced-motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .theme-key-aurora.app-shell::before,
+  .theme-key-aurora.app-shell::after,
+  .theme-key-aurora .app-main-content::before,
+  .theme-key-aurora .app-main-content::after,
+  .theme-key-aurora .app-nav-item.active::after,
+  .theme-key-aurora .bottom-nav button.active::after,
+  .theme-key-aurora .progress > span::after,
+  .theme-key-aurora .progress [style*="width"]::after {
+    animation: none !important;
+  }
+  .theme-key-aurora .app-main-content {
+    animation: none !important;
   }
   .theme-key-aurora .btn-primary::before {
-    display: none;
+    display: none !important;
+  }
+  .theme-key-aurora .app-sidebar h1,
+  .theme-key-aurora .app-logo-text {
+    animation: none !important;
+    background-position: 0% 50% !important;
+  }
+  .theme-key-aurora .app-logo img,
+  .theme-key-aurora .app-logo svg {
+    animation: none !important;
   }
 }
 
-/* ---------- 13. Мобильные ---------- */
+/* ============================================================
+   18. МОБИЛЬНЫЕ — облегчаем эффекты
+   ============================================================ */
 @media (max-width: 1023px) {
-  .theme-key-aurora .aurora-waves {
-    animation-duration: 360s;
+  /* Волну замедляем ещё сильнее */
+  .theme-key-aurora.app-shell::before {
+    animation-duration: 320s;
   }
-  .theme-key-aurora .aurora-waves-2 {
-    display: none;
+
+  /* Звёзды реже и менее яркие */
+  .theme-key-aurora.app-shell::after {
+    opacity: 0.65;
+    animation-duration: 14s;
   }
-  .theme-key-aurora .aurora-stars {
-    background-size: 700px 550px;
-    opacity: 0.8;
+
+  /* Падающие звёзды выключаем */
+  .theme-key-aurora .app-main-content::before,
+  .theme-key-aurora .app-main-content::after {
+    display: none !important;
   }
-  .theme-key-aurora .panel,
-  .theme-key-aurora .card,
-  .theme-key-aurora .modal-content,
-  .theme-key-aurora .dropdown-menu {
-    -webkit-backdrop-filter: blur(16px) saturate(120%);
-    backdrop-filter: blur(16px) saturate(120%);
+
+  /* Пульсирующие точки активного меню убираем */
+  .theme-key-aurora .app-nav-item.active::after,
+  .theme-key-aurora .bottom-nav button.active::after {
+    display: none !important;
   }
-  .theme-key-aurora .sidebar,
-  .theme-key-aurora .nav-sidebar {
+
+  /* Активный пункт — мягкая подсветка, без левой полосы */
+  .theme-key-aurora .app-nav-item.active,
+  .theme-key-aurora .app-nav-item.is-active,
+  .theme-key-aurora .bottom-nav button.active {
+    border-left: none !important;
+    background: rgba(94, 234, 212, 0.14) !important;
+    box-shadow: inset 0 0 16px rgba(94, 234, 212, 0.10);
+    border-radius: 12px;
+  }
+
+  /* Панели — меньше blur */
+  .theme-key-aurora .app-card,
+  .theme-key-aurora .app-panel {
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter: blur(14px) saturate(120%);
+  }
+
+  .theme-key-aurora .app-sidebar,
+  .theme-key-aurora .admin-sidebar {
     -webkit-backdrop-filter: blur(20px) saturate(130%);
     backdrop-filter: blur(20px) saturate(130%);
+  }
+
+  /* Логотип не «дышит» — экономит батарею */
+  .theme-key-aurora .app-logo img,
+  .theme-key-aurora .app-logo svg {
+    animation: none;
   }
 }
