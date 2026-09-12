@@ -836,14 +836,54 @@ body:has(.theme-key-aurora) .install-platform-item[data-selected] {
    18. МОБИЛЬНЫЕ — облегчаем эффекты
    ============================================================ */
 @media (max-width: 1023px) {
-  /* Волну замедляем ещё сильнее */
+  /* --- ФОН НА МОБИЛЬНЫХ: вместо 12 лучей — 3 мягких пятна --- */
   .theme-key-aurora.app-shell::before {
+    inset: -8%;
+    background-image:
+      /* Зелёное свечение слева-сверху */
+      radial-gradient(ellipse 70% 55% at 22% 22%,
+        rgba(34, 197, 94, 0.30) 0%,
+        rgba(34, 197, 94, 0.12) 40%,
+        transparent 75%),
+      /* Бирюзовое свечение справа-сверху */
+      radial-gradient(ellipse 60% 50% at 78% 26%,
+        rgba(94, 234, 212, 0.28) 0%,
+        rgba(94, 234, 212, 0.10) 42%,
+        transparent 78%),
+      /* Общее свечение у горизонта */
+      radial-gradient(ellipse 110% 35% at 50% 62%,
+        rgba(94, 234, 212, 0.16) 0%,
+        rgba(34, 197, 94, 0.06) 45%,
+        transparent 80%);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
     animation-duration: 340s;
   }
 
-  /* Лучи и звёзды — тише и без пульсации */
+  /* Лучи убираем полностью, оставляем только звёзды */
   .theme-key-aurora.app-shell::after {
-    opacity: 0.65;
+    background-image:
+      radial-gradient(2.2px 2.2px at 34% 36%,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(94, 234, 212, 0.55) 38%,
+        transparent 72%),
+      radial-gradient(1.6px 1.6px at 12% 22%, rgba(255, 255, 255, 0.80), transparent 60%),
+      radial-gradient(1.6px 1.6px at 44% 14%, rgba(255, 255, 255, 0.75), transparent 60%),
+      radial-gradient(1.6px 1.6px at 76% 82%, rgba(255, 255, 255, 0.70), transparent 60%),
+      radial-gradient(1.4px 1.4px at 88% 30%, rgba(255, 255, 255, 0.65), transparent 60%),
+      radial-gradient(1.3px 1.3px at 28% 68%, rgba(255, 255, 255, 0.55), transparent 60%),
+      radial-gradient(1.3px 1.3px at 6%  88%, rgba(255, 255, 255, 0.50), transparent 60%),
+      radial-gradient(1.3px 1.3px at 54% 92%, rgba(255, 255, 255, 0.52), transparent 60%),
+      radial-gradient(1.3px 1.3px at 70% 12%, rgba(255, 255, 255, 0.58), transparent 60%),
+      radial-gradient(1.3px 1.3px at 92% 66%, rgba(255, 255, 255, 0.50), transparent 60%),
+      radial-gradient(0.9px 0.9px at 8%  12%, rgba(255, 255, 255, 0.40), transparent 55%),
+      radial-gradient(0.9px 0.9px at 24% 36%, rgba(255, 255, 255, 0.38), transparent 55%),
+      radial-gradient(0.9px 0.9px at 58% 18%, rgba(255, 255, 255, 0.38), transparent 55%),
+      radial-gradient(0.9px 0.9px at 84% 82%, rgba(255, 255, 255, 0.36), transparent 55%),
+      radial-gradient(0.9px 0.9px at 36% 96%, rgba(255, 255, 255, 0.36), transparent 55%);
+    background-size: 700px 550px;
+    background-repeat: repeat;
+    opacity: 0.75;
     animation: none;
   }
 
