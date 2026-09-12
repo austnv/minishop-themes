@@ -1,0 +1,1040 @@
+/* ============================================================
+   SOLAR — Восход солнца для MiniShop
+   v1 — тёплая тема с двумя вариантами (dark / light)
+   ------------------------------------------------------------
+   - Огромное солнце в правом верхнем углу
+   - Лучи медленно вращаются (3 мин / оборот)
+   - Тёплая пыль в воздухе
+   - Падающие искры
+   - Золотые кнопки со свечением
+   - Прогресс-бары как рассвет: жёлтый → оранжевый → красный
+   ------------------------------------------------------------
+   Только rgba() и hex. Никаких url(), @font-face, @import,
+   color-mix(), data:, путей с ..
+   ============================================================ */
+
+/* ---------- 0. Якорь темы ---------- */
+.theme-key-solar.app-shell,
+.theme-key-solar {
+  --solar-yellow: #fbbf24;
+  --solar-orange: #f97316;
+  --solar-red: #dc2626;
+  --solar-cream: #fef3c7;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.theme-key-solar.app-shell {
+  background: var(--bg) !important;
+  color: var(--text);
+  font-family: var(--font-ui);
+  position: relative;
+  isolation: isolate;
+}
+
+/* ============================================================
+   1. СОЛНЦЕ — диск + мягкое свечение (::before)
+   ============================================================ */
+.theme-key-solar.app-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+
+  background-image:
+    /* Яркий диск солнца */
+    radial-gradient(circle 220px at 86% 14%,
+      rgba(255, 244, 200, 0.85) 0%,
+      rgba(251, 191, 36, 0.60) 22%,
+      rgba(249, 115, 22, 0.35) 48%,
+      rgba(220, 38, 38, 0.14) 68%,
+      transparent 88%),
+    /* Второй ореол — тёплое сияние вокруг */
+    radial-gradient(circle 560px at 86% 14%,
+      rgba(251, 191, 36, 0.22) 0%,
+      rgba(249, 115, 22, 0.10) 40%,
+      rgba(220, 38, 38, 0.04) 65%,
+      transparent 80%),
+    /* Широкое зарево над горизонтом */
+    radial-gradient(ellipse 130% 45% at 50% 105%,
+      rgba(249, 115, 22, 0.16) 0%,
+      rgba(251, 191, 36, 0.06) 45%,
+      transparent 80%),
+    /* Тёплый отблеск на левом краю — баланс */
+    radial-gradient(ellipse 50% 40% at 0% 30%,
+      rgba(251, 191, 36, 0.06) 0%,
+      transparent 70%);
+
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation: solar-breathe 14s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes solar-breathe {
+  0%   { transform: scale(1);       opacity: 0.95; }
+  50%  { transform: scale(1.015);   opacity: 1;    }
+  100% { transform: scale(1);       opacity: 0.95; }
+}
+
+/* ============================================================
+   2. ЛУЧИ СОЛНЦА — conic-gradient из точки солнца (::after)
+   Контейнер — большой квадрат 200vmax с центром в точке
+   солнца. При вращении квадрат всегда покрывает вьюпорт,
+   поэтому лучи не обрезаются.
+   ============================================================ */
+.theme-key-solar.app-shell::after {
+  content: '';
+  position: fixed;
+  /* Центр квадрата точно в точке солнца (86% 14% вьюпорта) */
+  top: calc(14% - 100vmax);
+  left: calc(86% - 100vmax);
+  width: 200vmax;
+  height: 200vmax;
+  z-index: -1;
+  pointer-events: none;
+
+  background-image: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(251, 191, 36, 0.000) 0deg,
+    rgba(251, 191, 36, 0.075) 5deg,
+    rgba(251, 191, 36, 0.000) 10deg,
+    rgba(251, 191, 36, 0.000) 30deg,
+    rgba(249, 115, 22, 0.075) 35deg,
+    rgba(249, 115, 22, 0.000) 40deg,
+    rgba(249, 115, 22, 0.000) 60deg,
+    rgba(251, 191, 36, 0.065) 65deg,
+    rgba(251, 191, 36, 0.000) 70deg,
+    rgba(251, 191, 36, 0.000) 90deg,
+    rgba(249, 115, 22, 0.070) 95deg,
+    rgba(249, 115, 22, 0.000) 100deg,
+    rgba(249, 115, 22, 0.000) 120deg,
+    rgba(251, 191, 36, 0.075) 125deg,
+    rgba(251, 191, 36, 0.000) 130deg,
+    rgba(251, 191, 36, 0.000) 150deg,
+    rgba(249, 115, 22, 0.065) 155deg,
+    rgba(249, 115, 22, 0.000) 160deg,
+    rgba(249, 115, 22, 0.000) 180deg,
+    rgba(251, 191, 36, 0.070) 185deg,
+    rgba(251, 191, 36, 0.000) 190deg,
+    rgba(251, 191, 36, 0.000) 210deg,
+    rgba(249, 115, 22, 0.075) 215deg,
+    rgba(249, 115, 22, 0.000) 220deg,
+    rgba(249, 115, 22, 0.000) 240deg,
+    rgba(251, 191, 36, 0.065) 245deg,
+    rgba(251, 191, 36, 0.000) 250deg,
+    rgba(251, 191, 36, 0.000) 270deg,
+    rgba(249, 115, 22, 0.070) 275deg,
+    rgba(249, 115, 22, 0.000) 280deg,
+    rgba(249, 115, 22, 0.000) 300deg,
+    rgba(251, 191, 36, 0.075) 305deg,
+    rgba(251, 191, 36, 0.000) 310deg,
+    rgba(251, 191, 36, 0.000) 330deg,
+    rgba(249, 115, 22, 0.065) 335deg,
+    rgba(249, 115, 22, 0.000) 340deg,
+    rgba(249, 115, 22, 0.000) 360deg
+  );
+  background-repeat: no-repeat;
+
+  /* Маска: центр прозрачен для лучей, к краям они затухают,
+     чтобы не было видно резкой границы квадрата */
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    #000 0%,
+    #000 45%,
+    rgba(0, 0, 0, 0.7) 65%,
+    transparent 92%
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    #000 0%,
+    #000 45%,
+    rgba(0, 0, 0, 0.7) 65%,
+    transparent 92%
+  );
+
+  transform-origin: 50% 50%;
+  animation: solar-rays-spin 180s linear infinite;
+  will-change: transform;
+}
+
+@keyframes solar-rays-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   3. ПЫЛЬ И ИСКРЫ (::before / ::after на .app-main-content)
+   ============================================================ */
+.theme-key-solar .app-main-content::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image:
+    radial-gradient(1.2px 1.2px at 12% 22%, rgba(255, 220, 150, 0.60), transparent 60%),
+    radial-gradient(0.9px 0.9px at 28% 68%, rgba(255, 200, 120, 0.50), transparent 60%),
+    radial-gradient(1.4px 1.4px at 44% 14%, rgba(255, 220, 150, 0.70), transparent 60%),
+    radial-gradient(0.9px 0.9px at 61% 48%, rgba(255, 200, 120, 0.45), transparent 60%),
+    radial-gradient(1.2px 1.2px at 76% 82%, rgba(255, 220, 150, 0.60), transparent 60%),
+    radial-gradient(0.9px 0.9px at 88% 30%, rgba(255, 200, 120, 0.50), transparent 60%),
+    radial-gradient(1.1px 1.1px at 6%  88%, rgba(255, 220, 150, 0.50), transparent 60%),
+    radial-gradient(1.1px 1.1px at 54% 92%, rgba(255, 220, 150, 0.55), transparent 60%),
+    radial-gradient(1.4px 1.4px at 34% 38%, rgba(255, 230, 160, 0.65), transparent 60%),
+    radial-gradient(1px   1px   at 92% 66%, rgba(255, 200, 120, 0.50), transparent 60%),
+    radial-gradient(1px   1px   at 18% 44%, rgba(255, 220, 150, 0.50), transparent 60%),
+    radial-gradient(1px   1px   at 48% 76%, rgba(255, 200, 120, 0.50), transparent 60%),
+    radial-gradient(0.9px 0.9px at 8%  12%, rgba(255, 230, 160, 0.55), transparent 60%),
+    radial-gradient(0.9px 0.9px at 24% 36%, rgba(255, 230, 160, 0.50), transparent 60%),
+    radial-gradient(0.9px 0.9px at 72% 58%, rgba(255, 220, 150, 0.50), transparent 60%);
+
+  background-size: 900px 700px;
+  background-repeat: repeat;
+  opacity: 0.9;
+  animation: solar-dust 11s ease-in-out infinite alternate;
+}
+
+@keyframes solar-dust {
+  0%   { opacity: 0.75; }
+  100% { opacity: 1;    }
+}
+
+/* Падающая искра */
+.theme-key-solar .app-main-content::after {
+  content: '';
+  position: fixed;
+  top: 8%;
+  right: 12%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffecb3;
+  box-shadow:
+    0 0 6px 2px rgba(255, 236, 179, 0.90),
+    0 0 20px 6px rgba(251, 191, 36, 0.55);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  animation: solar-ember 55s linear infinite;
+  animation-delay: 12s;
+}
+
+@keyframes solar-ember {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(40deg);
+    opacity: 0;
+  }
+  2%  { opacity: 1; }
+  8%  { opacity: 0; }
+  100% {
+    transform: translate3d(-1600px, 1000px, 0) rotate(40deg);
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   4. САЙДБАР — тёплое стекло
+   Aurora-линия по правому краю — через background-image,
+   без position: relative (урок Aurora).
+   ============================================================ */
+.theme-key-solar .app-sidebar,
+.theme-key-solar .admin-sidebar {
+  background: var(--panel-3) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(135%);
+  backdrop-filter: blur(24px) saturate(135%);
+  border-right: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+@media (min-width: 1024px) {
+  .theme-key-solar .app-sidebar,
+  .theme-key-solar .admin-sidebar {
+    background-image: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(251, 191, 36, 0.40) 20%,
+      rgba(249, 115, 22, 0.60) 50%,
+      rgba(220, 38, 38, 0.35) 80%,
+      transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 1px 80%;
+  }
+}
+
+/* ============================================================
+   5. ЛОГОТИП — жёлтый → оранжевый → красный
+   ============================================================ */
+.theme-key-solar .app-sidebar h1,
+.theme-key-solar .app-sidebar [class*="brand"] strong,
+.theme-key-solar .app-sidebar [class*="brand"] span,
+.theme-key-solar .app-sidebar [class*="logo"] strong,
+.theme-key-solar .app-sidebar [class*="logo-text"],
+.theme-key-solar .admin-sidebar-brand strong,
+.theme-key-solar .brand-row strong,
+.theme-key-solar .login-brand h1,
+.theme-key-solar .app-logo-text {
+  background: linear-gradient(
+    270deg,
+    #fbbf24 0%,
+    #f97316 35%,
+    #dc2626 55%,
+    #f97316 75%,
+    #fbbf24 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  animation: solar-shimmer 11s linear infinite;
+}
+
+@keyframes solar-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+.theme-key-solar .app-sidebar svg,
+.theme-key-solar .app-sidebar img {
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.55));
+}
+
+.theme-key-solar .app-logo img,
+.theme-key-solar .app-logo svg,
+.theme-key-solar .login-brand svg {
+  filter:
+    drop-shadow(0 0 14px rgba(251, 191, 36, 0.55))
+    drop-shadow(0 0 4px rgba(249, 115, 22, 0.80));
+  animation: solar-breathe-logo 4s ease-in-out infinite;
+}
+
+@keyframes solar-breathe-logo {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 12px rgba(251, 191, 36, 0.45))
+      drop-shadow(0 0 4px rgba(249, 115, 22, 0.70));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 20px rgba(251, 191, 36, 0.75))
+      drop-shadow(0 0 8px rgba(249, 115, 22, 0.95));
+  }
+}
+
+/* ============================================================
+   6. НАВИГАЦИЯ
+   ============================================================ */
+.theme-key-solar .app-nav-item,
+.theme-key-solar .bottom-nav button,
+.theme-key-solar .admin-nav-item {
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-key-solar .app-nav-item:hover,
+.theme-key-solar .bottom-nav button:hover,
+.theme-key-solar .admin-nav-item:hover {
+  background: rgba(251, 191, 36, 0.08);
+  color: var(--accent);
+}
+
+.theme-key-solar .app-nav-item.active,
+.theme-key-solar .app-nav-item.is-active,
+.theme-key-solar .app-nav-item[data-active="true"],
+.theme-key-solar .bottom-nav button.active,
+.theme-key-solar .bottom-nav button.is-active,
+.theme-key-solar .admin-nav-item.active,
+.theme-key-solar .admin-nav-item.is-active {
+  background: linear-gradient(
+    90deg,
+    rgba(251, 191, 36, 0.18) 0%,
+    rgba(249, 115, 22, 0.08) 60%,
+    transparent 100%
+  ) !important;
+  border-left: 3px solid var(--accent);
+  box-shadow:
+    inset 0 0 20px rgba(251, 191, 36, 0.12),
+    0 0 14px rgba(249, 115, 22, 0.14);
+  color: var(--accent);
+}
+
+.theme-key-solar .app-nav-item.active::after,
+.theme-key-solar .app-nav-item.is-active::after,
+.theme-key-solar .app-nav-item[data-active="true"]::after,
+.theme-key-solar .bottom-nav button.active::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px 2px rgba(251, 191, 36, 0.70);
+  animation: solar-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes solar-pulse {
+  0%, 100% {
+    opacity: 0.55;
+    transform: translateY(-50%) scale(0.85);
+    box-shadow: 0 0 6px 1px rgba(251, 191, 36, 0.50);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.20);
+    box-shadow: 0 0 16px 3px rgba(251, 191, 36, 0.80);
+  }
+}
+
+/* ============================================================
+   7. КНОПКИ — «золотые» со свечением
+   ============================================================ */
+.theme-key-solar .btn-primary,
+.theme-key-solar button[type="submit"],
+.theme-key-solar .admin-btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    #fbbf24 0%,
+    #f97316 55%,
+    #dc2626 100%
+  ) !important;
+  background-size: 200% 200% !important;
+  border: none !important;
+  color: #2a1408 !important;
+  font-weight: 600;
+  box-shadow:
+    0 4px 18px rgba(251, 191, 36, 0.35),
+    0 0 24px rgba(249, 115, 22, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  transition:
+    box-shadow 0.35s ease,
+    transform 0.2s ease,
+    background-position 0.7s ease;
+}
+
+.theme-key-solar .btn-primary:hover:not(:disabled) {
+  background-position: 100% 100% !important;
+  box-shadow:
+    0 6px 26px rgba(251, 191, 36, 0.55),
+    0 0 36px rgba(249, 115, 22, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.theme-key-solar .btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.theme-key-solar .btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.85s ease;
+  pointer-events: none;
+}
+
+.theme-key-solar .btn-primary:hover:not(:disabled)::before {
+  transform: translateX(100%);
+}
+
+.theme-key-solar .btn:not(.btn-primary),
+.theme-key-solar .admin-btn:not(.admin-btn-primary) {
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.22);
+  color: var(--accent);
+  transition: all 0.3s ease;
+}
+
+.theme-key-solar .btn:not(.btn-primary):hover:not(:disabled),
+.theme-key-solar .admin-btn:not(.admin-btn-primary):hover:not(:disabled) {
+  background: rgba(251, 191, 36, 0.14);
+  border-color: rgba(251, 191, 36, 0.42);
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.22);
+}
+
+/* ============================================================
+   8. ПАНЕЛИ И КАРТОЧКИ — тёплое матовое стекло
+   ============================================================ */
+.theme-key-solar .app-card,
+.theme-key-solar .app-panel,
+.theme-key-solar .dialog-card,
+.theme-key-solar .auth-card,
+.theme-key-solar .support-overview-card,
+.theme-key-solar .support-list-card,
+.theme-key-solar .support-ticket-card,
+.theme-key-solar .support-conversation-card,
+.theme-key-solar .support-create-panel,
+.theme-key-solar .install-step,
+.theme-key-solar .install-subscription-card,
+.theme-key-solar .install-qr-wrap,
+.theme-key-solar .trial-offer-card,
+.theme-key-solar .subscription-purchase-description,
+.theme-key-solar .pending-payment-card {
+  background: var(--panel) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(130%);
+  backdrop-filter: blur(22px) saturate(130%);
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.theme-key-solar .app-card:hover,
+.theme-key-solar .support-list-card:hover,
+.theme-key-solar .support-ticket-card:hover {
+  border-color: rgba(251, 191, 36, 0.30) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(251, 191, 36, 0.10),
+    0 0 28px rgba(249, 115, 22, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   9. ССЫЛКИ
+   ============================================================ */
+.theme-key-solar a,
+.theme-key-solar .link {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease, text-shadow 0.25s ease;
+}
+
+.theme-key-solar a:hover,
+.theme-key-solar .link:hover {
+  color: #fcd34d;
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.60);
+}
+
+/* ============================================================
+   10. ПРОГРЕСС-БАРЫ — как рассвет: жёлтый → оранжевый → красный
+   ============================================================ */
+.theme-key-solar .progress,
+.theme-key-solar .progress-bar,
+.theme-key-solar [role="progressbar"] {
+  position: relative;
+  display: block;
+  height: 10px !important;
+  border-radius: 10px;
+  border: 1px solid rgba(251, 191, 36, 0.22);
+  overflow: hidden;
+  background: rgba(251, 191, 36, 0.06) !important;
+}
+
+.theme-key-solar .progress > span,
+.theme-key-solar .progress-bar > span,
+.theme-key-solar [role="progressbar"] > span,
+.theme-key-solar .progress [style*="width"],
+.theme-key-solar .progress-bar [style*="width"] {
+  display: block !important;
+  height: 100% !important;
+  min-width: 12px !important;
+  background: linear-gradient(
+    90deg,
+    #fbbf24 0%,
+    #f97316 55%,
+    #dc2626 100%
+  ) !important;
+  background-size: 200% 100% !important;
+  box-shadow:
+    0 0 12px rgba(251, 191, 36, 0.60),
+    inset 0 0 4px rgba(255, 255, 255, 0.35) !important;
+  border-radius: 10px !important;
+  position: relative;
+  overflow: hidden;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-key-solar .progress > span::after,
+.theme-key-solar .progress [style*="width"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.60),
+    transparent
+  );
+  animation: solar-scan 3s ease-in-out infinite;
+}
+
+@keyframes solar-scan {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================================
+   11. ФОРМЫ — тёплое кольцо фокуса
+   ============================================================ */
+.theme-key-solar input,
+.theme-key-solar textarea,
+.theme-key-solar select,
+.theme-key-solar .input,
+.theme-key-solar .admin-input {
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-key-solar input:focus,
+.theme-key-solar textarea:focus,
+.theme-key-solar select:focus,
+.theme-key-solar .input:focus,
+.theme-key-solar .admin-input:focus {
+  outline: none;
+  border-color: rgba(251, 191, 36, 0.60);
+  box-shadow:
+    0 0 0 3px rgba(251, 191, 36, 0.18),
+    0 0 18px rgba(249, 115, 22, 0.20);
+}
+
+.theme-key-solar ::placeholder {
+  color: var(--dim);
+}
+
+/* ============================================================
+   12. ТАБЛИЦЫ, БЕЙДЖИ
+   ============================================================ */
+.theme-key-solar .ticket-status-badge,
+.theme-key-solar .admin-badge {
+  border-radius: 999px;
+  border: 1px solid rgba(251, 191, 36, 0.32);
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.theme-key-solar .admin-table thead th,
+.theme-key-solar table thead th {
+  background: rgba(251, 191, 36, 0.06);
+  color: var(--accent);
+  border-bottom: 1px solid rgba(251, 191, 36, 0.22);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.theme-key-solar .admin-table tbody tr,
+.theme-key-solar table tbody tr {
+  border-bottom: 1px solid rgba(251, 191, 36, 0.08);
+  transition: background 0.25s ease;
+}
+
+.theme-key-solar .admin-table tbody tr:hover,
+.theme-key-solar table tbody tr:hover {
+  background: rgba(251, 191, 36, 0.06);
+}
+
+/* ============================================================
+   13. ИКОНКИ LUCIDE — тёплое свечение
+   ============================================================ */
+.theme-key-solar svg.lucide,
+.theme-key-solar svg[class*="lucide-"] {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+  fill: none !important;
+  stroke-width: 1.7;
+  filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.45));
+  transition: filter 0.3s ease, stroke 0.3s ease, color 0.3s ease;
+}
+
+.theme-key-solar .app-nav-item svg.lucide,
+.theme-key-solar .admin-nav-item svg.lucide {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+}
+
+.theme-key-solar .app-nav-item:hover svg.lucide,
+.theme-key-solar .admin-nav-item:hover svg.lucide {
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.70));
+}
+
+.theme-key-solar .app-nav-item.active svg.lucide,
+.theme-key-solar .app-nav-item.is-active svg.lucide,
+.theme-key-solar .admin-nav-item.active svg.lucide,
+.theme-key-solar .admin-nav-item.is-active svg.lucide {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+  filter:
+    drop-shadow(0 0 10px rgba(251, 191, 36, 0.90))
+    drop-shadow(0 0 3px rgba(249, 115, 22, 0.60));
+}
+
+.theme-key-solar .bottom-nav button.active svg.lucide,
+.theme-key-solar .bottom-nav button.is-active svg.lucide {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+  filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.85));
+}
+
+/* В золотых кнопках иконка — тёплый тёмно-коричневый */
+.theme-key-solar .btn-primary svg.lucide,
+.theme-key-solar .admin-btn-primary svg.lucide,
+.theme-key-solar button[type="submit"] svg.lucide {
+  color: #2a1408 !important;
+  stroke: #2a1408 !important;
+  filter: drop-shadow(0 0 3px rgba(42, 20, 8, 0.35));
+}
+
+/* ============================================================
+   14. СКРОЛЛБАР
+   ============================================================ */
+.theme-key-solar ::-webkit-scrollbar { width: 8px; height: 8px; }
+.theme-key-solar ::-webkit-scrollbar-track { background: transparent; }
+.theme-key-solar ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.40), rgba(249, 115, 22, 0.30));
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.theme-key-solar ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.70), rgba(249, 115, 22, 0.50));
+  background-clip: padding-box;
+}
+
+/* ============================================================
+   15. ПОЯВЛЕНИЕ КОНТЕНТА
+   ============================================================ */
+.theme-key-solar .app-main-content {
+  animation: solar-appear 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes solar-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+    filter: blur(4px);
+  }
+  60% { filter: blur(0); }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ============================================================
+   16. ВНЕ SHELL — тосты, дропдауны, попапы
+   ============================================================ */
+body:has(.theme-key-solar) .app-toast {
+  background: var(--panel-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text) !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-radius: 14px;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.50),
+    0 0 22px rgba(251, 191, 36, 0.12);
+}
+
+body:has(.theme-key-solar) .language-select-content,
+body:has(.theme-key-solar) .admin-select-content,
+body:has(.theme-key-solar) .install-platform-content,
+body:has(.theme-key-solar) .support-select-content,
+body:has(.theme-key-solar) .field-error-tooltip {
+  background: var(--panel-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text) !important;
+  border-radius: 14px;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.50),
+    0 0 22px rgba(251, 191, 36, 0.14);
+}
+
+body:has(.theme-key-solar) .language-select-item[data-highlighted],
+body:has(.theme-key-solar) .language-select-item[data-selected],
+body:has(.theme-key-solar) .install-platform-item[data-highlighted],
+body:has(.theme-key-solar) .install-platform-item[data-selected] {
+  background: rgba(251, 191, 36, 0.16) !important;
+  color: var(--accent) !important;
+}
+
+/* ============================================================
+   17. ДОСТУПНОСТЬ
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .theme-key-solar.app-shell::before,
+  .theme-key-solar.app-shell::after,
+  .theme-key-solar .app-main-content::before,
+  .theme-key-solar .app-main-content::after,
+  .theme-key-solar .app-nav-item.active::after,
+  .theme-key-solar .bottom-nav button.active::after,
+  .theme-key-solar .progress > span::after,
+  .theme-key-solar .progress [style*="width"]::after,
+  .theme-key-solar .app-main-content,
+  .theme-key-solar .app-logo img,
+  .theme-key-solar .app-logo svg,
+  .theme-key-solar .app-sidebar h1,
+  .theme-key-solar .app-logo-text {
+    animation: none !important;
+  }
+  .theme-key-solar .btn-primary::before {
+    display: none !important;
+  }
+  .theme-key-solar .app-sidebar h1,
+  .theme-key-solar .app-logo-text {
+    background-position: 0% 50% !important;
+  }
+}
+
+/* ============================================================
+   18. МОБИЛЬНЫЕ — облегчаем эффекты
+   ============================================================ */
+@media (max-width: 1023px) {
+  /* Солнце — компактнее и ближе к углу */
+  .theme-key-solar.app-shell::before {
+    background-image:
+      radial-gradient(circle 140px at 92% 8%,
+        rgba(255, 244, 200, 0.85) 0%,
+        rgba(251, 191, 36, 0.55) 25%,
+        rgba(249, 115, 22, 0.30) 50%,
+        transparent 82%),
+      radial-gradient(circle 340px at 92% 8%,
+        rgba(251, 191, 36, 0.18) 0%,
+        rgba(249, 115, 22, 0.08) 40%,
+        transparent 78%),
+      radial-gradient(ellipse 130% 40% at 50% 105%,
+        rgba(249, 115, 22, 0.14) 0%,
+        transparent 80%);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    animation-duration: 22s;
+  }
+
+  /* Лучи отключаем — на маленьком экране рябят */
+  .theme-key-solar.app-shell::after {
+    background-image: none;
+    animation: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  /* Пыль — реже */
+  .theme-key-solar .app-main-content::before {
+    opacity: 0.7;
+    animation: none;
+    background-size: 700px 550px;
+  }
+
+  /* Искру выключаем */
+  .theme-key-solar .app-main-content::after {
+    display: none !important;
+  }
+
+  /* Пульсирующие точки активного меню убираем */
+  .theme-key-solar .app-nav-item.active::after,
+  .theme-key-solar .bottom-nav button.active::after {
+    display: none !important;
+  }
+
+  /* Активный пункт — мягкая подсветка без левой полосы */
+  .theme-key-solar .app-nav-item.active,
+  .theme-key-solar .app-nav-item.is-active,
+  .theme-key-solar .bottom-nav button.active {
+    border-left: none !important;
+    background: rgba(251, 191, 36, 0.16) !important;
+    box-shadow: inset 0 0 16px rgba(251, 191, 36, 0.12);
+    border-radius: 12px;
+  }
+
+  /* Меньше blur для панелей */
+  .theme-key-solar .app-card,
+  .theme-key-solar .app-panel {
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter: blur(14px) saturate(120%);
+  }
+
+  .theme-key-solar .app-sidebar,
+  .theme-key-solar .admin-sidebar {
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    backdrop-filter: blur(20px) saturate(130%);
+  }
+
+  /* Логотип не «дышит» */
+  .theme-key-solar .app-logo img,
+  .theme-key-solar .app-logo svg {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   19. АДМИНКА — Solar (селекторы из Universe, палитра тёплая)
+   ============================================================ */
+
+.theme-key-solar .admin-sidebar {
+  background: var(--panel-3) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(130%);
+  backdrop-filter: blur(22px) saturate(130%);
+  border-right: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+.theme-key-solar .admin-sidebar-brand strong,
+.theme-key-solar .admin-sidebar [class*="brand"] strong {
+  background: linear-gradient(270deg,
+    #fbbf24 0%, #f97316 35%, #dc2626 55%, #f97316 75%, #fbbf24 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  animation: solar-shimmer 11s linear infinite;
+}
+
+.theme-key-solar .admin-nav-item {
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-key-solar .admin-nav-item:hover {
+  background: rgba(251, 191, 36, 0.08);
+  color: var(--accent);
+}
+
+.theme-key-solar .admin-nav-item.active,
+.theme-key-solar .admin-nav-item.is-active {
+  background: linear-gradient(90deg,
+    rgba(251, 191, 36, 0.18),
+    rgba(249, 115, 22, 0.05) 60%,
+    transparent) !important;
+  border-left: 3px solid var(--accent);
+  box-shadow: inset 0 0 18px rgba(251, 191, 36, 0.12);
+  color: var(--accent);
+}
+
+.theme-key-solar .admin-btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fbbf24 0%, #f97316 55%, #dc2626 100%) !important;
+  background-size: 200% 200% !important;
+  border: none !important;
+  color: #2a1408 !important;
+  font-weight: 600;
+  box-shadow:
+    0 4px 18px rgba(251, 191, 36, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  transition:
+    box-shadow 0.35s ease,
+    transform 0.2s ease,
+    background-position 0.7s ease;
+}
+
+.theme-key-solar .admin-btn-primary:hover:not(:disabled) {
+  background-position: 100% 100% !important;
+  box-shadow:
+    0 6px 26px rgba(251, 191, 36, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.theme-key-solar .admin-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+    transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.85s ease;
+  pointer-events: none;
+}
+
+.theme-key-solar .admin-btn-primary:hover:not(:disabled)::before {
+  transform: translateX(100%);
+}
+
+.theme-key-solar .admin-badge,
+.theme-key-solar .ticket-status-badge {
+  border-radius: 999px;
+  border: 1px solid rgba(251, 191, 36, 0.30);
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.theme-key-solar .admin-table thead th,
+.theme-key-solar table thead th {
+  background: rgba(251, 191, 36, 0.06);
+  color: var(--accent);
+  border-bottom: 1px solid rgba(251, 191, 36, 0.22);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.theme-key-solar .admin-table tbody tr,
+.theme-key-solar table tbody tr {
+  border-bottom: 1px solid rgba(251, 191, 36, 0.08);
+  transition: background 0.25s ease;
+}
+
+.theme-key-solar .admin-table tbody tr:hover,
+.theme-key-solar table tbody tr:hover {
+  background: rgba(251, 191, 36, 0.06);
+}
+
+.theme-key-solar .admin-input {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.theme-key-solar .admin-input:focus {
+  outline: none;
+  border-color: rgba(251, 191, 36, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(251, 191, 36, 0.15),
+    0 0 16px rgba(249, 115, 22, 0.18);
+}
+
+body:has(.theme-key-solar) .admin-select-content {
+  background: var(--panel-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text) !important;
+  border-radius: 14px;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.50),
+    0 0 22px rgba(251, 191, 36, 0.14);
+}
+
+body:has(.theme-key-solar) .admin-select-item[data-highlighted],
+body:has(.theme-key-solar) .admin-select-item[data-selected] {
+  background: rgba(251, 191, 36, 0.16) !important;
+  color: var(--accent) !important;
+}
