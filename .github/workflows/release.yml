@@ -73,13 +73,17 @@ jobs:
         run: |
           set -e
           python3 - <<'PY'
-          import json, os, re, sys
+          import json, re, sys
           from pathlib import Path
 
           THEMES_DIR = Path("themes")
           if not THEMES_DIR.is_dir():
               print("❌ Нет папки themes/")
               sys.exit(1)
+
+          # Убираем CSS-комментарии перед проверкой,
+          # чтобы не ловить упоминания в шапке файла.
+          COMMENT_RE = re.compile(r"/\*.*?\*/", re.DOTALL)
 
           FORBIDDEN_CSS = [
               (r"@import",        "@import"),
@@ -88,7 +92,6 @@ jobs:
               (r"data:",          "data:"),
               (r"\.\./",          "пути с .."),
           ]
-          FORBIDDEN_JSON = ["admin_bg"]  # пример: если что-то не разрешено
 
           errors = []
           themes = []
@@ -101,7 +104,6 @@ jobs:
               key = theme_dir.name
               print(f"→ Проверка темы: {key}")
 
-              # --- theme.json ---
               tj_path = theme_dir / "theme.json"
               if not tj_path.is_file():
                   errors.append(f"{key}: нет theme.json")
@@ -119,23 +121,21 @@ jobs:
               if not tj.get("tokens"):
                   errors.append(f"{key}: пустой tokens")
 
-              # --- обязательные файлы ---
               for fname in ("LICENSE", "README.md"):
                   if not (theme_dir / fname).is_file():
                       errors.append(f"{key}: нет {fname}")
 
-              # --- CSS ---
               css = theme_dir / "style.css"
               if css.is_file():
                   size = css.stat().st_size
                   if size > 512 * 1024:
                       errors.append(f"{key}: style.css {size} байт > 512 KiB")
                   text = css.read_text(encoding="utf-8", errors="ignore")
+                  code = COMMENT_RE.sub("", text)
                   for pattern, human in FORBIDDEN_CSS:
-                      if re.search(pattern, text):
+                      if re.search(pattern, code):
                           errors.append(f"{key}: style.css содержит {human}")
 
-              # --- размер папки и число файлов ---
               files = [p for p in theme_dir.rglob("*") if p.is_file()]
               total_files += len(files)
               if len(files) > 2000:
@@ -155,7 +155,6 @@ jobs:
 
           print(f"\n✅ Все темы валидны: {len(themes)}, файлов: {total_files}")
 
-          # Сохраняем манифест
           manifest = {
               "schema_version": 1,
               "themes": themes,
@@ -166,7 +165,6 @@ jobs:
           )
           print("📝 themes.json создан")
           PY
-
       # ---------- 4. Сборка архива ----------
       - name: Build archive
         id: archive
