@@ -1,0 +1,2 @@
+# minishop-themes
+
