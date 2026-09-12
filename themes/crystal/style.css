@@ -1,0 +1,1063 @@
+/* ============================================================
+   CRYSTAL — Драгоценный камень для MiniShop
+   v1 — гранёный премиум-стиль
+   ------------------------------------------------------------
+   - Фон из многоугольников через clip-path
+   - Преломление света от угла
+   - Огранённые кнопки (радиус сверху/снизу разный)
+   - Блик на логотипе
+   - Многослойная подсветка активных элементов
+   - Прогресс с резкими стопами, как грани
+   ------------------------------------------------------------
+   Только rgba() и hex. Никаких url(), @font-face, @import,
+   color-mix(), data:, путей с ..
+   ============================================================ */
+
+/* ---------- 0. Якорь темы ---------- */
+.theme-key-crystal.app-shell,
+.theme-key-crystal {
+  --crystal-cyan: #67e8f9;
+  --crystal-violet: #a78bfa;
+  --crystal-pink: #f0abfc;
+  --crystal-glow: rgba(103, 232, 249, 0.40);
+  --crystal-glow-strong: rgba(103, 232, 249, 0.65);
+  --crystal-violet-glow: rgba(167, 139, 250, 0.35);
+  --crystal-pink-glow: rgba(240, 171, 252, 0.30);
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.theme-key-crystal.app-shell {
+  background: var(--bg) !important;
+  color: var(--text);
+  font-family: var(--font-ui);
+  position: relative;
+  isolation: isolate;
+}
+
+/* ============================================================
+   1. ФОН — слой 1: грани кристалла через conic-gradient (::before)
+   conic-gradient рисует угловые сектора из точки — это даёт
+   чёткие видимые грани, в отличие от clip-path с множеством
+   polygon (который поддерживает только одно значение).
+   ============================================================ */
+.theme-key-crystal.app-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+
+  background:
+    /* Грань 1 — крупный кристалл в правом верхнем углу */
+    conic-gradient(
+      from 30deg at 82% 18%,
+      rgba(103, 232, 249, 0.00) 0deg 12deg,
+      rgba(103, 232, 249, 0.22) 12deg 48deg,
+      rgba(103, 232, 249, 0.08) 48deg 72deg,
+      rgba(167, 139, 250, 0.20) 72deg 108deg,
+      rgba(167, 139, 250, 0.06) 108deg 132deg,
+      rgba(240, 171, 252, 0.16) 132deg 168deg,
+      rgba(240, 171, 252, 0.00) 168deg 360deg
+    ),
+    /* Грань 2 — кристалл в левом нижнем углу */
+    conic-gradient(
+      from -50deg at 12% 78%,
+      rgba(103, 232, 249, 0.00) 0deg 20deg,
+      rgba(103, 232, 249, 0.18) 20deg 55deg,
+      rgba(167, 139, 250, 0.12) 55deg 95deg,
+      rgba(240, 171, 252, 0.14) 95deg 130deg,
+      rgba(103, 232, 249, 0.00) 130deg 360deg
+    ),
+    /* Грань 3 — тонкий скол в центре */
+    conic-gradient(
+      from 210deg at 55% 55%,
+      rgba(103, 232, 249, 0.00) 0deg 25deg,
+      rgba(167, 139, 250, 0.10) 25deg 60deg,
+      rgba(103, 232, 249, 0.00) 60deg 360deg
+    ),
+    /* Общее холодное свечение неба */
+    radial-gradient(
+      ellipse 80% 60% at 50% 40%,
+      rgba(103, 232, 249, 0.05) 0%,
+      transparent 75%
+    ),
+    /* Тёмная база */
+    #0a0a18;
+
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation: crystal-shift 40s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes crystal-shift {
+  0%   { transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(1.02) rotate(0.6deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* ============================================================
+   2. ФОН — слой 2: преломление света (::after)
+   Тонкие цветные полосы, проходящие через кристалл.
+   Резкие стопы = грани. Без blur — он убивает огранённость.
+   ============================================================ */
+.theme-key-crystal.app-shell::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    /* Диагональная полоса циан — сквозь кристалл */
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      transparent 32%,
+      rgba(103, 232, 249, 0.10) 32%,
+      rgba(103, 232, 249, 0.10) 34%,
+      transparent 34%,
+      transparent 60%,
+      rgba(103, 232, 249, 0.06) 60%,
+      rgba(103, 232, 249, 0.06) 61%,
+      transparent 61%
+    ),
+    /* Диагональ в другую сторону — фиолетовая */
+    linear-gradient(
+      -55deg,
+      transparent 0%,
+      transparent 42%,
+      rgba(167, 139, 250, 0.10) 42%,
+      rgba(167, 139, 250, 0.10) 44%,
+      transparent 44%,
+      transparent 72%,
+      rgba(167, 139, 250, 0.06) 72%,
+      rgba(167, 139, 250, 0.06) 73%,
+      transparent 73%
+    ),
+    /* Розовый скол */
+    linear-gradient(
+      40deg,
+      transparent 0%,
+      transparent 55%,
+      rgba(240, 171, 252, 0.08) 55%,
+      rgba(240, 171, 252, 0.08) 56%,
+      transparent 56%
+    );
+
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  animation: crystal-refract 30s ease-in-out infinite;
+}
+
+@keyframes crystal-refract {
+  0%   { opacity: 0.75; transform: translate3d(0, 0, 0); }
+  50%  { opacity: 1;    transform: translate3d(-0.5%, 0.3%, 0); }
+  100% { opacity: 0.75; transform: translate3d(0, 0, 0); }
+}
+
+/* ============================================================
+   3. ЛОГОТИП — блик на стекле
+   ============================================================ */
+.theme-key-crystal .app-sidebar h1,
+.theme-key-crystal .app-sidebar [class*="brand"] strong,
+.theme-key-crystal .app-sidebar [class*="brand"] span,
+.theme-key-crystal .app-sidebar [class*="logo"] strong,
+.theme-key-crystal .app-sidebar [class*="logo-text"],
+.theme-key-crystal .admin-sidebar-brand strong,
+.theme-key-crystal .brand-row strong,
+.theme-key-crystal .login-brand h1,
+.theme-key-crystal .app-logo-text {
+  background: linear-gradient(
+    270deg,
+    #67e8f9 0%,
+    #a78bfa 35%,
+    #f0abfc 55%,
+    #a78bfa 75%,
+    #67e8f9 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 2px;
+  animation: crystal-shimmer 10s linear infinite;
+  position: relative;
+}
+
+/* Блик — узкая светлая полоса, пробегающая по тексту */
+.theme-key-crystal .app-sidebar h1::after,
+.theme-key-crystal .app-logo-text::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: skewX(-25deg);
+  animation: crystal-glint 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes crystal-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+@keyframes crystal-glint {
+  0%, 70%, 100% { left: -60%; }
+  85%           { left: 130%; }
+}
+
+.theme-key-crystal .app-sidebar svg,
+.theme-key-crystal .app-sidebar img {
+  filter:
+    drop-shadow(0 0 8px rgba(103, 232, 249, 0.50))
+    drop-shadow(0 0 3px rgba(167, 139, 250, 0.40));
+}
+
+.theme-key-crystal .app-logo img,
+.theme-key-crystal .app-logo svg,
+.theme-key-crystal .login-brand svg {
+  filter:
+    drop-shadow(0 0 12px rgba(103, 232, 249, 0.50))
+    drop-shadow(0 0 4px rgba(167, 139, 250, 0.60));
+  animation: crystal-breathe 5s ease-in-out infinite;
+}
+
+@keyframes crystal-breathe {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 10px rgba(103, 232, 249, 0.40))
+      drop-shadow(0 0 4px rgba(167, 139, 250, 0.50));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 18px rgba(103, 232, 249, 0.65))
+      drop-shadow(0 0 8px rgba(167, 139, 250, 0.80));
+  }
+}
+
+/* ============================================================
+   4. САЙДБАР — гранёное стекло
+   Линия по правому краю — через background-image (без position: relative)
+   ============================================================ */
+.theme-key-crystal .app-sidebar,
+.theme-key-crystal .admin-sidebar {
+  background: var(--panel-3) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  backdrop-filter: blur(22px) saturate(140%);
+  border-right: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+@media (min-width: 1024px) {
+  .theme-key-crystal .app-sidebar,
+  .theme-key-crystal .admin-sidebar {
+    background-image: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(103, 232, 249, 0.35) 25%,
+      rgba(167, 139, 250, 0.50) 50%,
+      rgba(240, 171, 252, 0.30) 75%,
+      transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 1px 80%;
+  }
+}
+
+/* ============================================================
+   5. НАВИГАЦИЯ — многослойная подсветка
+   ============================================================ */
+.theme-key-crystal .app-nav-item,
+.theme-key-crystal .bottom-nav button,
+.theme-key-crystal .admin-nav-item {
+  border-radius: 8px;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-key-crystal .app-nav-item:hover,
+.theme-key-crystal .bottom-nav button:hover,
+.theme-key-crystal .admin-nav-item:hover {
+  background: rgba(103, 232, 249, 0.06);
+  color: var(--accent);
+}
+
+.theme-key-crystal .app-nav-item.active,
+.theme-key-crystal .app-nav-item.is-active,
+.theme-key-crystal .app-nav-item[data-active="true"],
+.theme-key-crystal .bottom-nav button.active,
+.theme-key-crystal .bottom-nav button.is-active,
+.theme-key-crystal .admin-nav-item.active,
+.theme-key-crystal .admin-nav-item.is-active {
+  background: linear-gradient(
+    90deg,
+    rgba(103, 232, 249, 0.16) 0%,
+    rgba(167, 139, 250, 0.10) 50%,
+    rgba(240, 171, 252, 0.04) 80%,
+    transparent 100%
+  ) !important;
+  border-left: 3px solid var(--accent);
+  box-shadow:
+    inset 0 0 24px rgba(103, 232, 249, 0.12),
+    0 0 16px rgba(103, 232, 249, 0.15),
+    0 0 30px rgba(167, 139, 250, 0.10);
+  color: var(--accent);
+}
+
+.theme-key-crystal .app-nav-item.active::after,
+.theme-key-crystal .app-nav-item.is-active::after,
+.theme-key-crystal .app-nav-item[data-active="true"]::after,
+.theme-key-crystal .bottom-nav button.active::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow:
+    0 0 8px 2px rgba(103, 232, 249, 0.70),
+    0 0 16px 4px rgba(167, 139, 250, 0.40);
+  animation: crystal-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes crystal-pulse {
+  0%, 100% {
+    opacity: 0.55;
+    transform: translateY(-50%) scale(0.85);
+    box-shadow:
+      0 0 6px 1px rgba(103, 232, 249, 0.50),
+      0 0 12px 3px rgba(167, 139, 250, 0.25);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.20);
+    box-shadow:
+      0 0 14px 3px rgba(103, 232, 249, 0.80),
+      0 0 24px 6px rgba(167, 139, 250, 0.55);
+  }
+}
+
+/* ============================================================
+   6. КНОПКИ — огранённые
+   border-radius разный сверху и снизу: имитация грани.
+   ============================================================ */
+.theme-key-crystal .btn-primary,
+.theme-key-crystal button[type="submit"],
+.theme-key-crystal .admin-btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    #67e8f9 0%,
+    #a78bfa 55%,
+    #f0abfc 100%
+  ) !important;
+  background-size: 200% 200% !important;
+  border: none !important;
+  color: #0a0a18 !important;
+  font-weight: 600;
+  /* Огранённая форма: сверху 4px, снизу 0px */
+  border-radius: 4px 4px 0 0 !important;
+  box-shadow:
+    0 4px 16px rgba(103, 232, 249, 0.30),
+    0 0 20px rgba(167, 139, 250, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  transition:
+    box-shadow 0.35s ease,
+    transform 0.2s ease,
+    background-position 0.7s ease;
+}
+
+.theme-key-crystal .btn-primary:hover:not(:disabled) {
+  background-position: 100% 100% !important;
+  box-shadow:
+    0 6px 24px rgba(103, 232, 249, 0.50),
+    0 0 30px rgba(167, 139, 250, 0.30),
+    0 0 40px rgba(240, 171, 252, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.theme-key-crystal .btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.theme-key-crystal .btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.50) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.85s ease;
+  pointer-events: none;
+}
+
+.theme-key-crystal .btn-primary:hover:not(:disabled)::before {
+  transform: translateX(100%);
+}
+
+/* Вторичные кнопки — тоже огранённые */
+.theme-key-crystal .btn:not(.btn-primary),
+.theme-key-crystal .admin-btn:not(.admin-btn-primary) {
+  background: rgba(103, 232, 249, 0.06);
+  border: 1px solid rgba(103, 232, 249, 0.22);
+  color: var(--accent);
+  border-radius: 4px 4px 0 0;
+  transition: all 0.3s ease;
+}
+
+.theme-key-crystal .btn:not(.btn-primary):hover:not(:disabled),
+.theme-key-crystal .admin-btn:not(.admin-btn-primary):hover:not(:disabled) {
+  background: rgba(103, 232, 249, 0.14);
+  border-color: rgba(103, 232, 249, 0.42);
+  box-shadow:
+    0 0 16px rgba(103, 232, 249, 0.20),
+    0 0 24px rgba(167, 139, 250, 0.12);
+}
+
+/* ============================================================
+   7. ПАНЕЛИ И КАРТОЧКИ — гранёное стекло
+   ============================================================ */
+.theme-key-crystal .app-card,
+.theme-key-crystal .app-panel,
+.theme-key-crystal .dialog-card,
+.theme-key-crystal .auth-card,
+.theme-key-crystal .support-overview-card,
+.theme-key-crystal .support-list-card,
+.theme-key-crystal .support-ticket-card,
+.theme-key-crystal .support-conversation-card,
+.theme-key-crystal .support-create-panel,
+.theme-key-crystal .install-step,
+.theme-key-crystal .install-subscription-card,
+.theme-key-crystal .install-qr-wrap,
+.theme-key-crystal .trial-offer-card,
+.theme-key-crystal .subscription-purchase-description,
+.theme-key-crystal .pending-payment-card {
+  background: var(--panel) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(135%);
+  backdrop-filter: blur(20px) saturate(135%);
+  border: 1px solid var(--border) !important;
+  border-radius: 8px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+  position: relative;
+}
+
+/* Тонкая грань по верхнему левому краю */
+.theme-key-crystal .app-card::before,
+.theme-key-crystal .app-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(103, 232, 249, 0.40),
+    rgba(167, 139, 250, 0.20),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.theme-key-crystal .app-card:hover,
+.theme-key-crystal .support-list-card:hover,
+.theme-key-crystal .support-ticket-card:hover {
+  border-color: rgba(103, 232, 249, 0.30) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.40),
+    0 0 0 1px rgba(103, 232, 249, 0.12),
+    0 0 28px rgba(167, 139, 250, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   8. ССЫЛКИ
+   ============================================================ */
+.theme-key-crystal a,
+.theme-key-crystal .link {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease, text-shadow 0.25s ease;
+}
+
+.theme-key-crystal a:hover,
+.theme-key-crystal .link:hover {
+  color: #a5f3fc;
+  text-shadow:
+    0 0 12px rgba(103, 232, 249, 0.60),
+    0 0 20px rgba(167, 139, 250, 0.30);
+}
+
+/* ============================================================
+   9. ПРОГРЕСС-БАРЫ — заливка кристаллом
+   Резкие стопы + минимальная ширина, чтобы было видно даже 2%.
+   ============================================================ */
+.theme-key-crystal .progress,
+.theme-key-crystal .progress-bar,
+.theme-key-crystal [role="progressbar"] {
+  position: relative;
+  display: block;
+  height: 12px !important;
+  border-radius: 4px 4px 0 0;
+  border: 1px solid rgba(103, 232, 249, 0.25);
+  overflow: hidden;
+  background: rgba(103, 232, 249, 0.08) !important;
+}
+
+.theme-key-crystal .progress > span,
+.theme-key-crystal .progress-bar > span,
+.theme-key-crystal [role="progressbar"] > span,
+.theme-key-crystal .progress [style*="width"],
+.theme-key-crystal .progress-bar [style*="width"] {
+  display: block !important;
+  height: 100% !important;
+  min-width: 20px !important; /* ← видно даже 2% */
+  /* Резкие стопы — имитация граней кристалла */
+  background: linear-gradient(
+    90deg,
+    #67e8f9 0%,
+    #67e8f9 28%,
+    #a78bfa 28%,
+    #a78bfa 52%,
+    #f0abfc 52%,
+    #f0abfc 78%,
+    #a78bfa 78%,
+    #a78bfa 100%
+  ) !important;
+  box-shadow:
+    0 0 14px rgba(103, 232, 249, 0.70),
+    0 0 22px rgba(167, 139, 250, 0.35),
+    inset 0 0 4px rgba(255, 255, 255, 0.40) !important;
+  border-radius: 4px 4px 0 0 !important;
+  position: relative;
+  overflow: hidden;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-key-crystal .progress > span::after,
+.theme-key-crystal .progress [style*="width"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.70),
+    transparent
+  );
+  animation: crystal-scan 3s ease-in-out infinite;
+}
+
+/* ============================================================
+   10. ФОРМЫ
+   ============================================================ */
+.theme-key-crystal input,
+.theme-key-crystal textarea,
+.theme-key-crystal select,
+.theme-key-crystal .input,
+.theme-key-crystal .admin-input {
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px 4px 0 0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-key-crystal input:focus,
+.theme-key-crystal textarea:focus,
+.theme-key-crystal select:focus,
+.theme-key-crystal .input:focus,
+.theme-key-crystal .admin-input:focus {
+  outline: none;
+  border-color: rgba(103, 232, 249, 0.60);
+  box-shadow:
+    0 0 0 3px rgba(103, 232, 249, 0.15),
+    0 0 18px rgba(167, 139, 250, 0.20);
+}
+
+.theme-key-crystal ::placeholder {
+  color: var(--dim);
+}
+
+/* ============================================================
+   11. ТАБЛИЦЫ, БЕЙДЖИ
+   ============================================================ */
+.theme-key-crystal .ticket-status-badge,
+.theme-key-crystal .admin-badge {
+  border-radius: 4px 4px 0 0;
+  border: 1px solid rgba(103, 232, 249, 0.32);
+  background: rgba(103, 232, 249, 0.12);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.theme-key-crystal .admin-table thead th,
+.theme-key-crystal table thead th {
+  background: rgba(103, 232, 249, 0.06);
+  color: var(--accent);
+  border-bottom: 1px solid rgba(103, 232, 249, 0.22);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.theme-key-crystal .admin-table tbody tr,
+.theme-key-crystal table tbody tr {
+  border-bottom: 1px solid rgba(103, 232, 249, 0.08);
+  transition: background 0.25s ease;
+}
+
+.theme-key-crystal .admin-table tbody tr:hover,
+.theme-key-crystal table tbody tr:hover {
+  background: rgba(103, 232, 249, 0.06);
+}
+
+/* ============================================================
+   12. ИКОНКИ LUCIDE
+   ============================================================ */
+.theme-key-crystal svg.lucide,
+.theme-key-crystal svg[class*="lucide-"] {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+  fill: none !important;
+  stroke-width: 1.7;
+  filter:
+    drop-shadow(0 0 5px rgba(103, 232, 249, 0.45))
+    drop-shadow(0 0 2px rgba(167, 139, 250, 0.25));
+  transition: filter 0.3s ease, stroke 0.3s ease, color 0.3s ease;
+}
+
+.theme-key-crystal .app-nav-item svg.lucide,
+.theme-key-crystal .admin-nav-item svg.lucide {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+}
+
+.theme-key-crystal .app-nav-item:hover svg.lucide,
+.theme-key-crystal .admin-nav-item:hover svg.lucide {
+  filter:
+    drop-shadow(0 0 8px rgba(103, 232, 249, 0.70))
+    drop-shadow(0 0 3px rgba(167, 139, 250, 0.40));
+}
+
+.theme-key-crystal .app-nav-item.active svg.lucide,
+.theme-key-crystal .app-nav-item.is-active svg.lucide,
+.theme-key-crystal .admin-nav-item.active svg.lucide,
+.theme-key-crystal .admin-nav-item.is-active svg.lucide {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+  filter:
+    drop-shadow(0 0 10px rgba(103, 232, 249, 0.90))
+    drop-shadow(0 0 4px rgba(167, 139, 250, 0.60));
+}
+
+.theme-key-crystal .bottom-nav button.active svg.lucide,
+.theme-key-crystal .bottom-nav button.is-active svg.lucide {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+  filter: drop-shadow(0 0 10px rgba(103, 232, 249, 0.85));
+}
+
+.theme-key-crystal .btn-primary svg.lucide,
+.theme-key-crystal .admin-btn-primary svg.lucide,
+.theme-key-crystal button[type="submit"] svg.lucide {
+  color: #0a0a18 !important;
+  stroke: #0a0a18 !important;
+  filter: drop-shadow(0 0 3px rgba(10, 10, 24, 0.35));
+}
+
+/* ============================================================
+   13. СКРОЛЛБАР
+   ============================================================ */
+.theme-key-crystal ::-webkit-scrollbar { width: 8px; height: 8px; }
+.theme-key-crystal ::-webkit-scrollbar-track { background: transparent; }
+.theme-key-crystal ::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(103, 232, 249, 0.40),
+    rgba(167, 139, 250, 0.35),
+    rgba(240, 171, 252, 0.30)
+  );
+  border-radius: 4px 4px 0 0;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.theme-key-crystal ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(103, 232, 249, 0.70),
+    rgba(167, 139, 250, 0.60),
+    rgba(240, 171, 252, 0.50)
+  );
+  background-clip: padding-box;
+}
+
+/* ============================================================
+   14. ПОЯВЛЕНИЕ КОНТЕНТА
+   ============================================================ */
+.theme-key-crystal .app-main-content {
+  animation: crystal-appear 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes crystal-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+    filter: blur(6px);
+  }
+  60% { filter: blur(0); }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ============================================================
+   15. ВНЕ SHELL — тосты, дропдауны
+   ============================================================ */
+body:has(.theme-key-crystal) .app-toast {
+  background: var(--panel-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text) !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-radius: 6px;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(103, 232, 249, 0.12);
+}
+
+body:has(.theme-key-crystal) .language-select-content,
+body:has(.theme-key-crystal) .admin-select-content,
+body:has(.theme-key-crystal) .install-platform-content,
+body:has(.theme-key-crystal) .support-select-content,
+body:has(.theme-key-crystal) .field-error-tooltip {
+  background: var(--panel-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text) !important;
+  border-radius: 6px;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(103, 232, 249, 0.14);
+}
+
+body:has(.theme-key-crystal) .language-select-item[data-highlighted],
+body:has(.theme-key-crystal) .language-select-item[data-selected],
+body:has(.theme-key-crystal) .install-platform-item[data-highlighted],
+body:has(.theme-key-crystal) .install-platform-item[data-selected] {
+  background: rgba(103, 232, 249, 0.16) !important;
+  color: var(--accent) !important;
+}
+
+/* ============================================================
+   16. ДОСТУПНОСТЬ
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .theme-key-crystal.app-shell::before,
+  .theme-key-crystal.app-shell::after,
+  .theme-key-crystal .app-main-content::before,
+  .theme-key-crystal .app-nav-item.active::after,
+  .theme-key-crystal .bottom-nav button.active::after,
+  .theme-key-crystal .progress > span::after,
+  .theme-key-crystal .progress [style*="width"]::after,
+  .theme-key-crystal .app-main-content,
+  .theme-key-crystal .app-logo img,
+  .theme-key-crystal .app-logo svg,
+  .theme-key-crystal .app-sidebar h1,
+  .theme-key-crystal .app-logo-text,
+  .theme-key-crystal .app-sidebar h1::after,
+  .theme-key-crystal .app-logo-text::after {
+    animation: none !important;
+  }
+  .theme-key-crystal .btn-primary::before {
+    display: none !important;
+  }
+  .theme-key-crystal .app-sidebar h1,
+  .theme-key-crystal .app-logo-text {
+    background-position: 0% 50% !important;
+  }
+}
+
+/* ============================================================
+   17. МОБИЛЬНЫЕ
+   ============================================================ */
+@media (max-width: 1023px) {
+  /* Фон — без размытия, чтобы не тормозить */
+  .theme-key-crystal.app-shell::before {
+    filter: blur(30px);
+    animation-duration: 60s;
+  }
+
+  /* Многоугольники упрощаем */
+  .theme-key-crystal.app-shell::after {
+    -webkit-clip-path: polygon(
+      0% 0%,
+      42% 0%,
+      18% 42%,
+      0% 30%
+    ),
+    polygon(
+      58% 14%,
+      92% 4%,
+      96% 50%,
+      66% 58%
+    ),
+    polygon(
+      68% 68%,
+      100% 58%,
+      100% 100%,
+      58% 100%
+    );
+    clip-path: polygon(
+      0% 0%,
+      42% 0%,
+      18% 42%,
+      0% 30%
+    ),
+    polygon(
+      58% 14%,
+      92% 4%,
+      96% 50%,
+      66% 58%
+    ),
+    polygon(
+      68% 68%,
+      100% 58%,
+      100% 100%,
+      58% 100%
+    );
+    animation: none;
+    opacity: 0.7;
+  }
+
+  /* Преломление — только лёгкая подсветка */
+  .theme-key-crystal .app-main-content::before {
+    opacity: 0.5;
+    animation: none;
+  }
+
+  /* Пульсирующие точки убираем */
+  .theme-key-crystal .app-nav-item.active::after,
+  .theme-key-crystal .bottom-nav button.active::after {
+    display: none !important;
+  }
+
+  /* Активный пункт — мягкая подсветка */
+  .theme-key-crystal .app-nav-item.active,
+  .theme-key-crystal .app-nav-item.is-active,
+  .theme-key-crystal .bottom-nav button.active {
+    border-left: none !important;
+    background: rgba(103, 232, 249, 0.14) !important;
+    box-shadow: inset 0 0 16px rgba(103, 232, 249, 0.10);
+    border-radius: 8px;
+  }
+
+  /* Меньше blur */
+  .theme-key-crystal .app-card,
+  .theme-key-crystal .app-panel {
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter: blur(14px) saturate(120%);
+  }
+
+  .theme-key-crystal .app-sidebar,
+  .theme-key-crystal .admin-sidebar {
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    backdrop-filter: blur(20px) saturate(130%);
+  }
+
+  /* Логотип не «дышит» и не блестит */
+  .theme-key-crystal .app-logo img,
+  .theme-key-crystal .app-logo svg,
+  .theme-key-crystal .app-sidebar h1::after,
+  .theme-key-crystal .app-logo-text::after {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   18. АДМИНКА — Crystal
+   ============================================================ */
+.theme-key-crystal .admin-sidebar {
+  background: var(--panel-3) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(130%);
+  backdrop-filter: blur(22px) saturate(130%);
+  border-right: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+.theme-key-crystal .admin-sidebar-brand strong,
+.theme-key-crystal .admin-sidebar [class*="brand"] strong {
+  background: linear-gradient(270deg,
+    #67e8f9 0%, #a78bfa 35%, #f0abfc 55%, #a78bfa 75%, #67e8f9 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 2px;
+  animation: crystal-shimmer 10s linear infinite;
+}
+
+.theme-key-crystal .admin-nav-item {
+  border-radius: 8px;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-key-crystal .admin-nav-item:hover {
+  background: rgba(103, 232, 249, 0.06);
+  color: var(--accent);
+}
+
+.theme-key-crystal .admin-nav-item.active,
+.theme-key-crystal .admin-nav-item.is-active {
+  background: linear-gradient(90deg,
+    rgba(103, 232, 249, 0.16),
+    rgba(167, 139, 250, 0.10) 50%,
+    transparent) !important;
+  border-left: 3px solid var(--accent);
+  box-shadow:
+    inset 0 0 18px rgba(103, 232, 249, 0.12),
+    0 0 14px rgba(167, 139, 250, 0.10);
+  color: var(--accent);
+}
+
+.theme-key-crystal .admin-btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #67e8f9 0%, #a78bfa 55%, #f0abfc 100%) !important;
+  background-size: 200% 200% !important;
+  border: none !important;
+  color: #0a0a18 !important;
+  font-weight: 600;
+  border-radius: 4px 4px 0 0 !important;
+  box-shadow:
+    0 4px 16px rgba(103, 232, 249, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  transition:
+    box-shadow 0.35s ease,
+    transform 0.2s ease,
+    background-position 0.7s ease;
+}
+
+.theme-key-crystal .admin-btn-primary:hover:not(:disabled) {
+  background-position: 100% 100% !important;
+  box-shadow:
+    0 6px 24px rgba(103, 232, 249, 0.50),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.theme-key-crystal .admin-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+    transparent 30%, rgba(255, 255, 255, 0.50) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.85s ease;
+  pointer-events: none;
+}
+
+.theme-key-crystal .admin-btn-primary:hover:not(:disabled)::before {
+  transform: translateX(100%);
+}
+
+.theme-key-crystal .admin-badge,
+.theme-key-crystal .ticket-status-badge {
+  border-radius: 4px 4px 0 0;
+  border: 1px solid rgba(103, 232, 249, 0.30);
+  background: rgba(103, 232, 249, 0.12);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.theme-key-crystal .admin-table thead th,
+.theme-key-crystal table thead th {
+  background: rgba(103, 232, 249, 0.06);
+  color: var(--accent);
+  border-bottom: 1px solid rgba(103, 232, 249, 0.22);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.theme-key-crystal .admin-table tbody tr,
+.theme-key-crystal table tbody tr {
+  border-bottom: 1px solid rgba(103, 232, 249, 0.08);
+  transition: background 0.25s ease;
+}
+
+.theme-key-crystal .admin-table tbody tr:hover,
+.theme-key-crystal table tbody tr:hover {
+  background: rgba(103, 232, 249, 0.06);
+}
+
+.theme-key-crystal .admin-input {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 4px 4px 0 0;
+}
+
+.theme-key-crystal .admin-input:focus {
+  outline: none;
+  border-color: rgba(103, 232, 249, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(103, 232, 249, 0.15),
+    0 0 16px rgba(167, 139, 250, 0.18);
+}
+
+body:has(.theme-key-crystal) .admin-select-content {
+  background: var(--panel-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text) !important;
+  border-radius: 6px;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(103, 232, 249, 0.14);
+}
+
+body:has(.theme-key-crystal) .admin-select-item[data-highlighted],
+body:has(.theme-key-crystal) .admin-select-item[data-selected] {
+  background: rgba(103, 232, 249, 0.16) !important;
+  color: var(--accent) !important;
+}

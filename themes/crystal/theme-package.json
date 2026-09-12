@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "version": "0.1.0",
+  "description": {
+    "ru": "Кристалл",
+    "en": "Crystal"
+  },
+  "author": { "name": "austnv" },
+  "license": "MIT",
+  "homepage": "https://github.com/austnv/minishop-themes",
+  "compatibility": { "theme_api": 1 }
+}

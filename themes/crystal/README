@@ -1,0 +1,121 @@
+# 💎 Crystal — Драгоценный камень
+
+Премиум-тема в духе огранённого кристалла. Многоугольные грани на фоне, преломление света, огранённые кнопки с разным радиусом сверху и снизу, блик на логотипе и многослойная подсветка активных элементов. Тема для тех, кто ценит роскошь и детали.
+
+## 📸 Превью
+
+![Crystal preview](./preview.png)
+
+## ✨ Особенности
+
+### Фон
+- **Гранёные многоугольники** — три треугольника через `clip-path`, наложенные на размытый градиентный фон. Имитируют грани драгоценного камня.
+- **Преломление света** — тонкая плёнка поверх фона, меняющая оттенок в зависимости от положения. Медленно «дышит» (25s).
+- **Три цветовые грани** — голубая (верх-лево), фиолетовая (центр), розовая (низ-право). Смещаются относительно друг друга (40s).
+
+### UI
+- **Логотип** — переливающийся градиент циан → фиолет → розовый + **пробегающий блик** через `::after` (6s).
+- **Огранённые кнопки** — `border-radius: 4px 4px 0 0` (сверху скруглено, снизу остро), имитация грани.
+- **Прогресс-бары** — **резкие стопы** в градиенте: циан → фиолет → розовый → фиолет. Как грани одного камня.
+- **Активные пункты меню** — многослойная подсветка: `inset` + внешняя тень циан + внешняя тень фиолет.
+- **Фокус форм** — двойное свечение: циан + фиолет.
+- **Карточки** — гранёное стекло с тонкой цветной линией по верхнему левому краю.
+- **Иконки Lucide** — двойное свечение (циан + фиолет).
+- **Aurora-линия по правому краю сайдбара** — через `background-image`, без `position: relative`.
+
+### Доступность и мобильные
+- Все анимации отключаются при `prefers-reduced-motion: reduce`.
+- На `≤ 1023px`: многоугольники упрощаются, преломление слабее, пульсации и блик выключаются, blur снижается.
+
+## 🎨 Токены
+
+### Основные цвета
+
+| Токен | Значение | Плашка | Использование |
+|---|---|---|---|
+| `accent` | `#67e8f9` | ![#67e8f9](https://img.shields.io/badge/-67e8f9?style=flat-square) | Главный акцент, ссылки, активные элементы |
+| `bg` | `#0a0a18` | ![#0a0a18](https://img.shields.io/badge/-0a0a18?style=flat-square) | Базовый фон |
+| `panel` | `#121028` α .72 | ![#121028b8](https://img.shields.io/badge/-121028b8?style=flat-square) | Карточки, панели |
+| `panel_2` | `#1a1638` α .78 | ![#1a1638c7](https://img.shields.io/badge/-1a1638c7?style=flat-square) | Вторичные поверхности, тосты, дропдауны |
+| `panel_3` | `#0e0c20` α .65 | ![#0e0c20a6](https://img.shields.io/badge/-0e0c20a6?style=flat-square) | Сайдбар |
+| `blue` | `#a78bfa` | ![#a78bfa](https://img.shields.io/badge/-a78bfa?style=flat-square) | Фиолетовый помощник |
+| `border` | `#67e8f9` α .14 | ![#67e8f924](https://img.shields.io/badge/-67e8f924?style=flat-square) | Обычные границы |
+| `border_strong` | `#67e8f9` α .32 | ![#67e8f952](https://img.shields.io/badge/-67e8f952?style=flat-square) | Активные границы |
+
+### Текст и состояния
+
+| Токен | Значение | Плашка | Использование |
+|---|---|---|---|
+| `text` | `#e8e6ff` | ![#e8e6ff](https://img.shields.io/badge/-e8e6ff?style=flat-square) | Основной текст |
+| `muted` | `#b8b4d8` | ![#b8b4d8](https://img.shields.io/badge/-b8b4d8?style=flat-square) | Второстепенный текст |
+| `dim` | `#6a6690` | ![#6a6690](https://img.shields.io/badge/-6a6690?style=flat-square) | Placeholder |
+| `danger` | `#fb7185` | ![#fb7185](https://img.shields.io/badge/-fb7185?style=flat-square) | Ошибки |
+
+## 🎨 Палитра
+
+| Цвет | HEX | Плашка | Где встречается |
+|---|---|---|---|
+| Циан (акцент) | `#67e8f9` | ![#67e8f9](https://img.shields.io/badge/-67e8f9?style=flat-square) | Главный акцент, кнопки, активные элементы |
+| Светлый циан | `#a5f3fc` | ![#a5f3fc](https://img.shields.io/badge/-a5f3fc?style=flat-square) | Hover ссылок |
+| Фиолет | `#a78bfa` | ![#a78bfa](https://img.shields.io/badge/-a78bfa?style=flat-square) | Середина градиентов, свечение |
+| Розовый | `#f0abfc` | ![#f0abfc](https://img.shields.io/badge/-f0abfc?style=flat-square) | Конец градиента логотипа, прогресса |
+| Светлый текст | `#e8e6ff` | ![#e8e6ff](https://img.shields.io/badge/-e8e6ff?style=flat-square) | Основной текст |
+| Мягкий текст | `#b8b4d8` | ![#b8b4d8](https://img.shields.io/badge/-b8b4d8?style=flat-square) | Второстепенный |
+| Приглушённый | `#6a6690` | ![#6a6690](https://img.shields.io/badge/-6a6690?style=flat-square) | Placeholder |
+| Тёмный фон | `#0a0a18` | ![#0a0a18](https://img.shields.io/badge/-0a0a18?style=flat-square) | Базовый фон |
+| Панель | `#121028` | ![#121028](https://img.shields.io/badge/-121028?style=flat-square) | Карточки |
+| Панель-2 | `#1a1638` | ![#1a1638](https://img.shields.io/badge/-1a1638?style=flat-square) | Вторичные поверхности |
+| Панель-3 | `#0e0c20` | ![#0e0c20](https://img.shields.io/badge/-0e0c20?style=flat-square) | Сайдбар |
+| Красный | `#fb7185` | ![#fb7185](https://img.shields.io/badge/-fb7185?style=flat-square) | Ошибки |
+
+## 🎬 Градиенты
+
+| Название | CSS | Где применяется |
+|---|---|---|
+| Crystal (логотип) | `linear-gradient(270deg, #67e8f9, #a78bfa 35%, #f0abfc 55%, #a78bfa 75%, #67e8f9)` | Логотип, бренд |
+| Огранённая кнопка | `linear-gradient(135deg, #67e8f9, #a78bfa 55%, #f0abfc)` | `.btn-primary` |
+| Кристалл (прогресс) | `linear-gradient(90deg, #67e8f9 0%, #67e8f9 30%, #a78bfa 30%, #a78bfa 55%, #f0abfc 55%, #f0abfc 80%, #a78bfa 80%, #a78bfa 100%)` | Заливка `.progress` (резкие стопы) |
+| Активный пункт | `linear-gradient(90deg, rgba(103,232,249,.16), rgba(167,139,250,.10) 50%, rgba(240,171,252,.04) 80%, transparent)` | `.app-nav-item.active` |
+| Линия сайдбара | `linear-gradient(180deg, transparent, rgba(103,232,249,.35) 25%, rgba(167,139,250,.50) 50%, rgba(240,171,252,.30) 75%, transparent)` | `.app-sidebar` через `background-image` |
+
+## 🔤 Шрифты
+
+| Роль | Семейство | Fallback | Пример |
+|---|---|---|---|
+| Sans (UI) | Inter | -apple-system, BlinkMacSystemFont, Segoe UI, Arial | Основной текст |
+| Logo | Inter | Segoe UI, sans-serif | Логотип, заголовки |
+| Mono | JetBrains Mono | ui-monospace, Menlo, Consolas | Код, цифры |
+
+Шрифты подтягиваются MiniShop через токены `font_sans`, `font_logo`, `font_mono`. В CSS используется `var(--font-ui)`.
+
+## 📁 Структура
+
+```
+themes/crystal/
+├── LICENSE
+├── README.md
+├── theme.json
+├── theme-package.json
+├── style.css
+└── preview.png
+```
+
+## 🌗 Варианты
+
+**Один вариант — `dark`.** Crystal концептуально — тёмный драгоценный камень. Светлый вариант разрушил бы ощущение премиума и глубины: гранёные многоугольники и преломление света лучше всего работают на тёмном фоне, где свечение выглядит как настоящий блик на камне.
+
+## ⚙️ Установка
+
+Через админ-панель MiniShop → **Настройки → Темы → Установить из Git**:
+
+```
+URL:      https://github.com/austnv/minishop-themes
+Ветка:    master
+Подпапка: themes/crystal
+```
+
+ZIP в репозитории не хранится — MiniShop собирает пакет сам из подпапки.
+
+## 📝 Лицензия
+
+MIT — см. [LICENSE](./LICENSE).
