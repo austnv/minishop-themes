@@ -1,0 +1,288 @@
+name: Release themes
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+  # Ручной запуск для хотфиксов
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Версия (например v1.0.0). Пусто = взять из VERSION или дату"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+# Не запускать параллельно два релиза
+concurrency:
+  group: release-master
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build & release
+    # Только если PR реально смержен и пришёл из dev
+    # (для workflow_dispatch условие пропускается)
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+       github.event.pull_request.head.ref == 'dev')
+    runs-on: ubuntu-latest
+
+    steps:
+      # ---------- 1. Код ----------
+      - name: Checkout master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ---------- 2. Версия ----------
+      - name: Determine version
+        id: version
+        run: |
+          set -e
+          INPUT_VERSION="${{ github.event.inputs.version }}"
+          if [ -n "$INPUT_VERSION" ]; then
+            VERSION="$INPUT_VERSION"
+          elif [ -f VERSION ]; then
+            VERSION=$(tr -d '[:space:]' < VERSION)
+          else
+            VERSION="v$(date -u +%Y.%m.%d)-$(git rev-parse --short HEAD)"
+          fi
+
+          # Проверка: тег ещё не существует
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "❌ Тег $VERSION уже существует"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Версия: $VERSION"
+
+      # ---------- 3. Валидация тем ----------
+      - name: Validate themes
+        run: |
+          set -e
+          python3 - <<'PY'
+          import json, os, re, sys
+          from pathlib import Path
+
+          THEMES_DIR = Path("themes")
+          if not THEMES_DIR.is_dir():
+              print("❌ Нет папки themes/")
+              sys.exit(1)
+
+          FORBIDDEN_CSS = [
+              (r"@import",        "@import"),
+              (r"@font-face",     "@font-face"),
+              (r"url\s*\(",       "url(...)"),
+              (r"data:",          "data:"),
+              (r"\.\./",          "пути с .."),
+          ]
+          FORBIDDEN_JSON = ["admin_bg"]  # пример: если что-то не разрешено
+
+          errors = []
+          themes = []
+          total_files = 0
+
+          for theme_dir in sorted(THEMES_DIR.iterdir()):
+              if not theme_dir.is_dir() or theme_dir.name.startswith("."):
+                  continue
+
+              key = theme_dir.name
+              print(f"→ Проверка темы: {key}")
+
+              # --- theme.json ---
+              tj_path = theme_dir / "theme.json"
+              if not tj_path.is_file():
+                  errors.append(f"{key}: нет theme.json")
+                  continue
+              try:
+                  tj = json.loads(tj_path.read_text(encoding="utf-8"))
+              except Exception as e:
+                  errors.append(f"{key}: theme.json не парсится: {e}")
+                  continue
+
+              if tj.get("key") != key:
+                  errors.append(f"{key}: key='{tj.get('key')}' != папка '{key}'")
+              if not tj.get("names"):
+                  errors.append(f"{key}: пустой names")
+              if not tj.get("tokens"):
+                  errors.append(f"{key}: пустой tokens")
+
+              # --- обязательные файлы ---
+              for fname in ("LICENSE", "README.md"):
+                  if not (theme_dir / fname).is_file():
+                      errors.append(f"{key}: нет {fname}")
+
+              # --- CSS ---
+              css = theme_dir / "style.css"
+              if css.is_file():
+                  size = css.stat().st_size
+                  if size > 512 * 1024:
+                      errors.append(f"{key}: style.css {size} байт > 512 KiB")
+                  text = css.read_text(encoding="utf-8", errors="ignore")
+                  for pattern, human in FORBIDDEN_CSS:
+                      if re.search(pattern, text):
+                          errors.append(f"{key}: style.css содержит {human}")
+
+              # --- размер папки и число файлов ---
+              files = [p for p in theme_dir.rglob("*") if p.is_file()]
+              total_files += len(files)
+              if len(files) > 2000:
+                  errors.append(f"{key}: {len(files)} файлов > 2000")
+              size_bytes = sum(p.stat().st_size for p in files)
+              if size_bytes > 100 * 1024 * 1024:
+                  errors.append(f"{key}: распакованная тема {size_bytes} байт > 100 MiB")
+
+              name_ru = (tj.get("names") or {}).get("ru") or (tj.get("names") or {}).get("en") or key
+              themes.append({"key": key, "name": name_ru, "size": size_bytes})
+
+          if errors:
+              print("\n❌ Ошибки валидации:")
+              for e in errors:
+                  print("  -", e)
+              sys.exit(1)
+
+          print(f"\n✅ Все темы валидны: {len(themes)}, файлов: {total_files}")
+
+          # Сохраняем манифест
+          manifest = {
+              "schema_version": 1,
+              "themes": themes,
+          }
+          Path("themes.json").write_text(
+              json.dumps(manifest, ensure_ascii=False, indent=2),
+              encoding="utf-8",
+          )
+          print("📝 themes.json создан")
+          PY
+
+      # ---------- 4. Сборка архива ----------
+      - name: Build archive
+        id: archive
+        run: |
+          set -e
+          VERSION="${{ steps.version.outputs.version }}"
+          ARCHIVE="minishop-themes-${VERSION}.zip"
+
+          # Собираем только папку themes + манифест
+          zip -r "$ARCHIVE" themes/ themes.json \
+            -x "*/node_modules/*" \
+            -x "*/.git/*" \
+            -x "*.DS_Store" \
+            -x "*/.DS_Store" \
+            -x "*/.gitkeep"
+
+          # SHA-256
+          sha256sum "$ARCHIVE" > "${ARCHIVE}.sha256"
+
+          # Размер для отчёта
+          SIZE=$(stat -c%s "$ARCHIVE")
+          SIZE_MB=$(awk "BEGIN{printf \"%.2f\", $SIZE/1048576}")
+
+          echo "archive=$ARCHIVE" >> "$GITHUB_OUTPUT"
+          echo "sha256=${ARCHIVE}.sha256" >> "$GITHUB_OUTPUT"
+          echo "size_mb=$SIZE_MB" >> "$GITHUB_OUTPUT"
+
+          echo "📦 Собран архив: $ARCHIVE (${SIZE_MB} MiB)"
+          unzip -l "$ARCHIVE" | head -30
+
+      # ---------- 5. Release notes ----------
+      - name: Generate release notes
+        id: notes
+        run: |
+          set -e
+          VERSION="${{ steps.version.outputs.version }}"
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || true)
+
+          {
+            echo "## 🌅 Minishop Themes — $VERSION"
+            echo ""
+            echo "Единый архив со всеми темами MiniShop."
+            echo ""
+            echo "**Размер:** ${{ steps.archive.outputs.size_mb }} MiB  "
+            echo "**Тем:** $(python3 -c "import json; print(len(json.load(open('themes.json'))['themes']))")  "
+            echo "**SHA-256:** \`$(cut -d' ' -f1 < ${{ steps.archive.outputs.sha256 }})\`"
+            echo ""
+            echo "### 🎨 Темы в этой сборке"
+            echo ""
+            python3 - <<'PY'
+          import json
+          for t in json.load(open("themes.json"))["themes"]:
+              size_mb = t["size"] / 1048576
+              print(f"- **{t['name']}** (\\`{t['key']}\\`) — {size_mb:.2f} MiB")
+          PY
+            echo ""
+            echo "### 📦 Содержимое архива"
+            echo ""
+            echo '```'
+            echo "themes/<key>/"
+            echo "  ├── theme.json          # конфиг MiniShop"
+            echo "  ├── theme-package.json  # метаданные пакета"
+            echo "  ├── style.css           # стили"
+            echo "  ├── README.md           # описание"
+            echo "  ├── LICENSE             # MIT"
+            echo "  └── preview.png         # превью 1280×800"
+            echo "themes.json               # манифест всех тем"
+            echo '```'
+            echo ""
+            echo "### ⚙️ Установка"
+            echo ""
+            echo "Через админ-панель MiniShop → **Настройки → Темы → Установить из Git**:"
+            echo ""
+            echo '```'
+            echo "URL:      https://github.com/${{ github.repository }}"
+            echo "Ветка:    master"
+            echo "Подпапка: themes/<key>"
+            echo '```'
+            echo ""
+            echo "Или распакуйте архив и укажите путь до папки темы вручную."
+            echo ""
+
+            if [ -n "$PREV_TAG" ]; then
+              echo "### 📝 Изменения с $PREV_TAG"
+              echo ""
+              echo '```'
+              git log --pretty=format:"- %s (%h)" "$PREV_TAG..HEAD"
+              echo ""
+              echo '```'
+            else
+              echo "### 📝 Первый релиз"
+              echo ""
+              echo '```'
+              git log --pretty=format:"- %s (%h)" -20
+              echo ""
+              echo '```'
+            fi
+          } > RELEASE_NOTES.md
+
+          echo "notes_file=RELEASE_NOTES.md" >> "$GITHUB_OUTPUT"
+          cat RELEASE_NOTES.md
+
+      # ---------- 6. Публикация релиза ----------
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
+          body_path: ${{ steps.notes.outputs.notes_file }}
+          files: |
+            ${{ steps.archive.outputs.archive }}
+            ${{ steps.archive.outputs.sha256 }}
+            themes.json
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
