@@ -8,7 +8,7 @@
   "default": false,
   "use_primary_accent": true,
   "use_in_admin": true,
-  "assets_version": 2,
+  "assets_version": 3,
   "css_file": "style.css",
   "active_variant": "dark",
   "variants": {
@@ -54,6 +54,15 @@
     "font_logo": "Inter, \"Segoe UI\", sans-serif",
     "font_mono": "\"JetBrains Mono\", ui-monospace, Menlo, Consolas, monospace",
     "home_logo_scale_desktop": 100,
-    "home_logo_scale_mobile": 90
+    "home_logo_scale_mobile": 90,
+    "admin_bg": "#050a14",
+    "admin_surface": "#0a1220",
+    "admin_surface_2": "#0e1624",
+    "admin_elev": "#080e18",
+    "admin_border": "rgba(94, 234, 212, 0.12)",
+    "admin_border_strong": "rgba(94, 234, 212, 0.25)",
+    "admin_text": "#e2e8f0",
+    "admin_muted": "#94a3b8",
+    "admin_dim": "#64748b"
   }
 }
