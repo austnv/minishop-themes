@@ -1,0 +1,1026 @@
+/* ============================================================
+   STORM — Гроза для MiniShop
+   v1 — динамичная тема с электрическими акцентами
+   ------------------------------------------------------------
+   - Тёмные облака с медленным дрейфом (80s)
+   - Вспышки молний: двойной удар раз в 24 секунды
+   - Микродрожание активных элементов меню
+   - «Разряд» на кнопках при наведении
+   - Вспышка на логотипе
+   - Прогресс-бар как заряд молнии
+   ------------------------------------------------------------
+   Только rgba() и hex. Никаких url(), @font-face, @import,
+   color-mix(), data:, путей с ..
+   ============================================================ */
+
+/* ---------- 0. Якорь темы ---------- */
+.theme-key-storm.app-shell,
+.theme-key-storm {
+  --storm-violet: #a78bfa;
+  --storm-violet-bright: #c4b5fd;
+  --storm-yellow: #fde047;
+  --storm-glow: rgba(167, 139, 250, 0.40);
+  --storm-glow-strong: rgba(167, 139, 250, 0.65);
+  --storm-flash-glow: rgba(253, 224, 71, 0.55);
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.theme-key-storm.app-shell {
+  background: var(--bg) !important;
+  color: var(--text);
+  font-family: var(--font-ui);
+  position: relative;
+  isolation: isolate;
+}
+
+/* ============================================================
+   1. ФОН — облака (::before)
+   Пять крупных эллипсов серо-синего цвета, медленно дрейфуют.
+   ============================================================ */
+.theme-key-storm.app-shell::before {
+  content: '';
+  position: fixed;
+  inset: -5%;
+  z-index: -2;
+  pointer-events: none;
+
+  background-image:
+    /* Верхнее левое тяжёлое облако */
+    radial-gradient(ellipse 65% 45% at 18% 15%,
+      rgba(52, 55, 72, 0.65) 0%,
+      rgba(38, 41, 56, 0.35) 45%,
+      transparent 78%),
+    /* Верхнее правое */
+    radial-gradient(ellipse 55% 38% at 78% 22%,
+      rgba(48, 51, 68, 0.60) 0%,
+      rgba(36, 39, 54, 0.30) 45%,
+      transparent 78%),
+    /* Среднее левое */
+    radial-gradient(ellipse 70% 35% at 10% 55%,
+      rgba(44, 47, 62, 0.55) 0%,
+      transparent 75%),
+    /* Среднее правое */
+    radial-gradient(ellipse 65% 38% at 88% 62%,
+      rgba(40, 43, 58, 0.50) 0%,
+      transparent 75%),
+    /* Нижний слой */
+    radial-gradient(ellipse 80% 30% at 50% 92%,
+      rgba(46, 49, 64, 0.55) 0%,
+      transparent 78%),
+    /* База */
+    #0a0b12;
+
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation: storm-clouds-drift 80s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes storm-clouds-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(-1.5%, -0.5%, 0) scale(1.02); }
+}
+
+/* ============================================================
+   2. ФОН — холодное свечение и виньетка (::after)
+   ============================================================ */
+.theme-key-storm.app-shell::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    /* Холодное свечение сверху — предгрозовое небо */
+    radial-gradient(ellipse 100% 45% at 50% 0%,
+      rgba(167, 139, 250, 0.08) 0%,
+      transparent 70%),
+    /* Виньетка по краям */
+    radial-gradient(ellipse 90% 70% at 50% 50%,
+      transparent 40%,
+      rgba(0, 0, 0, 0.35) 100%);
+
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* ============================================================
+   3. МОЛНИИ — вспышки (::before на .app-main-content)
+   Двойной удар раз в 24 секунды. Плюс второй одиночный удар
+   в середине цикла. Наложение двумя разными цветами:
+   жёлтый — основной разряд, фиолетовый — отблеск.
+   ============================================================ */
+.theme-key-storm .app-main-content::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0;
+
+  background:
+    /* Жёлтая вспышка сверху-справа */
+    radial-gradient(ellipse 75% 55% at 68% 22%,
+      rgba(253, 224, 71, 0.45) 0%,
+      rgba(253, 224, 71, 0.15) 35%,
+      transparent 75%),
+    /* Фиолетовый отблеск слева */
+    radial-gradient(ellipse 60% 50% at 22% 35%,
+      rgba(167, 139, 250, 0.35) 0%,
+      transparent 70%);
+
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation: storm-flash 24s linear infinite;
+}
+
+@keyframes storm-flash {
+  /* Тихо */
+  0%, 100% { opacity: 0; }
+
+  /* Первый удар — двойной */
+  1%      { opacity: 0; }
+  1.4%    { opacity: 0.90; }
+  1.7%    { opacity: 0.10; }
+  2.0%    { opacity: 0.75; }
+  2.4%    { opacity: 0; }
+
+  /* Пауза */
+
+  /* Второй удар — одиночный, слабее */
+  14%     { opacity: 0; }
+  14.3%   { opacity: 0.65; }
+  14.7%   { opacity: 0.05; }
+  15.0%   { opacity: 0; }
+
+  /* Долгая пауза до конца цикла */
+  100%    { opacity: 0; }
+}
+
+/* ============================================================
+   4. ЛОГОТИП — с эффектом удара молнии
+   ============================================================ */
+.theme-key-storm .app-sidebar h1,
+.theme-key-storm .app-sidebar [class*="brand"] strong,
+.theme-key-storm .app-sidebar [class*="brand"] span,
+.theme-key-storm .app-sidebar [class*="logo"] strong,
+.theme-key-storm .app-sidebar [class*="logo-text"],
+.theme-key-storm .admin-sidebar-brand strong,
+.theme-key-storm .brand-row strong,
+.theme-key-storm .login-brand h1,
+.theme-key-storm .app-logo-text {
+  background: linear-gradient(
+    270deg,
+    #a78bfa 0%,
+    #c4b5fd 30%,
+    #fde047 50%,
+    #c4b5fd 70%,
+    #a78bfa 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 2px;
+  animation:
+    storm-shimmer 12s linear infinite,
+    storm-logo-strike 24s ease-in-out infinite;
+}
+
+@keyframes storm-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+@keyframes storm-logo-strike {
+  0%, 1%, 2.4%, 14%, 15%, 100% { filter: none; }
+
+  /* Первый удар */
+  1.4% { filter: brightness(1.8) drop-shadow(0 0 14px rgba(253, 224, 71, 0.95)); }
+  1.7% { filter: none; }
+  2.0% { filter: brightness(1.5) drop-shadow(0 0 10px rgba(167, 139, 250, 0.85)); }
+
+  /* Второй удар */
+  14.3% { filter: brightness(1.6) drop-shadow(0 0 12px rgba(253, 224, 71, 0.85)); }
+  14.7% { filter: none; }
+}
+
+.theme-key-storm .app-sidebar svg,
+.theme-key-storm .app-sidebar img {
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.50));
+}
+
+.theme-key-storm .app-logo img,
+.theme-key-storm .app-logo svg,
+.theme-key-storm .login-brand svg {
+  filter:
+    drop-shadow(0 0 12px rgba(167, 139, 250, 0.50))
+    drop-shadow(0 0 4px rgba(253, 224, 71, 0.35));
+  animation: storm-logo-pulse 4s ease-in-out infinite;
+}
+
+@keyframes storm-logo-pulse {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 10px rgba(167, 139, 250, 0.40))
+      drop-shadow(0 0 4px rgba(253, 224, 71, 0.25));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 18px rgba(167, 139, 250, 0.65))
+      drop-shadow(0 0 8px rgba(253, 224, 71, 0.45));
+  }
+}
+
+/* ============================================================
+   5. САЙДБАР — тёмное стекло + электрическая линия
+   ============================================================ */
+.theme-key-storm .app-sidebar,
+.theme-key-storm .admin-sidebar {
+  background: var(--panel-3) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(135%);
+  backdrop-filter: blur(22px) saturate(135%);
+  border-right: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+@media (min-width: 1024px) {
+  .theme-key-storm .app-sidebar,
+  .theme-key-storm .admin-sidebar {
+    background-image: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(167, 139, 250, 0.35) 25%,
+      rgba(253, 224, 71, 0.45) 50%,
+      rgba(167, 139, 250, 0.30) 75%,
+      transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 1px 80%;
+  }
+}
+
+/* ============================================================
+   6. НАВИГАЦИЯ — активные элементы дрожат
+   ============================================================ */
+.theme-key-storm .app-nav-item,
+.theme-key-storm .bottom-nav button,
+.theme-key-storm .admin-nav-item {
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-key-storm .app-nav-item:hover,
+.theme-key-storm .bottom-nav button:hover,
+.theme-key-storm .admin-nav-item:hover {
+  background: rgba(167, 139, 250, 0.07);
+  color: var(--accent);
+}
+
+.theme-key-storm .app-nav-item.active,
+.theme-key-storm .app-nav-item.is-active,
+.theme-key-storm .app-nav-item[data-active="true"],
+.theme-key-storm .admin-nav-item.active,
+.theme-key-storm .admin-nav-item.is-active {
+  background: linear-gradient(
+    90deg,
+    rgba(167, 139, 250, 0.18) 0%,
+    rgba(253, 224, 71, 0.06) 60%,
+    transparent 100%
+  ) !important;
+  border-left: 3px solid var(--accent);
+  box-shadow:
+    inset 0 0 22px rgba(167, 139, 250, 0.14),
+    0 0 16px rgba(167, 139, 250, 0.15);
+  color: var(--accent);
+  /* Электрическое дрожание */
+  animation: storm-tremble 5s ease-in-out infinite;
+}
+
+@keyframes storm-tremble {
+  0%, 100% { transform: translate(0, 0); }
+  20%      { transform: translate(-0.6px, 0.4px); }
+  40%      { transform: translate(0.5px, -0.4px); }
+  60%      { transform: translate(-0.4px, -0.3px); }
+  80%      { transform: translate(0.5px, 0.4px); }
+}
+
+/* Пульсирующая искра справа */
+.theme-key-storm .app-nav-item.active::after,
+.theme-key-storm .app-nav-item.is-active::after,
+.theme-key-storm .app-nav-item[data-active="true"]::after,
+.theme-key-storm .bottom-nav button.active::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--storm-yellow);
+  box-shadow:
+    0 0 10px 2px rgba(253, 224, 71, 0.75),
+    0 0 18px 4px rgba(167, 139, 250, 0.45);
+  animation: storm-spark 2.2s ease-in-out infinite;
+}
+
+@keyframes storm-spark {
+  0%, 100% {
+    opacity: 0.55;
+    transform: translateY(-50%) scale(0.85);
+    box-shadow:
+      0 0 6px 1px rgba(253, 224, 71, 0.55),
+      0 0 12px 3px rgba(167, 139, 250, 0.25);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.25);
+    box-shadow:
+      0 0 16px 3px rgba(253, 224, 71, 0.90),
+      0 0 26px 6px rgba(167, 139, 250, 0.60);
+  }
+}
+
+/* ============================================================
+   7. КНОПКИ — «разряд» при наведении
+   ============================================================ */
+.theme-key-storm .btn-primary,
+.theme-key-storm button[type="submit"],
+.theme-key-storm .admin-btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    #a78bfa 0%,
+    #c4b5fd 55%,
+    #a78bfa 100%
+  ) !important;
+  background-size: 200% 200% !important;
+  border: none !important;
+  color: #0a0b12 !important;
+  font-weight: 600;
+  box-shadow:
+    0 4px 16px rgba(167, 139, 250, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  transition:
+    box-shadow 0.35s ease,
+    background-position 0.6s ease;
+}
+
+.theme-key-storm .btn-primary:hover:not(:disabled),
+.theme-key-storm .admin-btn-primary:hover:not(:disabled) {
+  background-position: 100% 100% !important;
+  box-shadow:
+    0 6px 24px rgba(167, 139, 250, 0.55),
+    0 0 30px rgba(253, 224, 71, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  /* Лёгкий разряд каждые 4 секунды */
+  animation: storm-discharge 4s ease-in-out infinite;
+}
+
+@keyframes storm-discharge {
+  0%, 3%, 100% { transform: translate(0, 0); }
+  0.5% { transform: translate(-1.5px, 1px); }
+  1%   { transform: translate(1.5px, -1px); }
+  1.5% { transform: translate(-1px, 0.5px); }
+  2%   { transform: translate(1px, -0.5px); }
+  2.5% { transform: translate(-0.5px, 0); }
+}
+
+.theme-key-storm .btn-primary:active:not(:disabled),
+.theme-key-storm .admin-btn-primary:active:not(:disabled) {
+  transform: translate(0, 0);
+  animation: none;
+}
+
+/* Пробегающий блик */
+.theme-key-storm .btn-primary::before,
+.theme-key-storm .admin-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.40) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.85s ease;
+  pointer-events: none;
+}
+
+.theme-key-storm .btn-primary:hover:not(:disabled)::before,
+.theme-key-storm .admin-btn-primary:hover:not(:disabled)::before {
+  transform: translateX(100%);
+}
+
+/* Вторичные кнопки */
+.theme-key-storm .btn:not(.btn-primary),
+.theme-key-storm .admin-btn:not(.admin-btn-primary) {
+  background: rgba(167, 139, 250, 0.05);
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  color: var(--accent);
+  transition: all 0.3s ease;
+}
+
+.theme-key-storm .btn:not(.btn-primary):hover:not(:disabled),
+.theme-key-storm .admin-btn:not(.admin-btn-primary):hover:not(:disabled) {
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.42);
+  box-shadow:
+    0 0 16px rgba(167, 139, 250, 0.20),
+    0 0 24px rgba(253, 224, 71, 0.10);
+}
+
+/* ============================================================
+   8. ПАНЕЛИ И КАРТОЧКИ
+   ============================================================ */
+.theme-key-storm .app-card,
+.theme-key-storm .app-panel,
+.theme-key-storm .dialog-card,
+.theme-key-storm .auth-card,
+.theme-key-storm .support-overview-card,
+.theme-key-storm .support-list-card,
+.theme-key-storm .support-ticket-card,
+.theme-key-storm .support-conversation-card,
+.theme-key-storm .support-create-panel,
+.theme-key-storm .install-step,
+.theme-key-storm .install-subscription-card,
+.theme-key-storm .install-qr-wrap,
+.theme-key-storm .trial-offer-card,
+.theme-key-storm .subscription-purchase-description,
+.theme-key-storm .pending-payment-card {
+  background: var(--panel) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(135%);
+  backdrop-filter: blur(20px) saturate(135%);
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.theme-key-storm .app-card:hover,
+.theme-key-storm .support-list-card:hover,
+.theme-key-storm .support-ticket-card:hover {
+  border-color: rgba(167, 139, 250, 0.30) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(167, 139, 250, 0.12),
+    0 0 26px rgba(167, 139, 250, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   9. ССЫЛКИ
+   ============================================================ */
+.theme-key-storm a,
+.theme-key-storm .link {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease, text-shadow 0.25s ease;
+}
+
+.theme-key-storm a:hover,
+.theme-key-storm .link:hover {
+  color: #c4b5fd;
+  text-shadow:
+    0 0 12px rgba(167, 139, 250, 0.65),
+    0 0 20px rgba(253, 224, 71, 0.25);
+}
+
+/* ============================================================
+   10. ПРОГРЕСС-БАРЫ — заряд молнии
+   Жёлтые вспышки внутри фиолетового градиента + «заряд»
+   ============================================================ */
+.theme-key-storm .progress,
+.theme-key-storm .progress-bar,
+.theme-key-storm [role="progressbar"] {
+  position: relative;
+  display: block;
+  height: 10px !important;
+  border-radius: 6px;
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  overflow: hidden;
+  background: rgba(167, 139, 250, 0.05) !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.40);
+}
+
+.theme-key-storm .progress > span,
+.theme-key-storm .progress-bar > span,
+.theme-key-storm [role="progressbar"] > span,
+.theme-key-storm .progress [style*="width"],
+.theme-key-storm .progress-bar [style*="width"] {
+  display: block !important;
+  height: 100% !important;
+  min-width: 24px !important;
+  /* Резкие стопы = «зубцы» молнии */
+  background: linear-gradient(
+    90deg,
+    #a78bfa 0%,
+    #a78bfa 22%,
+    #c4b5fd 22%,
+    #c4b5fd 30%,
+    #fde047 30%,
+    #fde047 45%,
+    #a78bfa 45%,
+    #a78bfa 58%,
+    #fde047 58%,
+    #fde047 72%,
+    #a78bfa 72%,
+    #a78bfa 100%
+  ) !important;
+  box-shadow:
+    0 0 14px rgba(167, 139, 250, 0.75),
+    0 0 22px rgba(253, 224, 71, 0.35),
+    inset 0 0 4px rgba(255, 255, 255, 0.40) !important;
+  border-radius: 6px !important;
+  position: relative;
+  overflow: hidden;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: storm-charge 2.4s ease-in-out infinite;
+}
+
+@keyframes storm-charge {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.30); }
+}
+
+.theme-key-storm .progress > span::after,
+.theme-key-storm .progress [style*="width"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.75),
+    transparent
+  );
+  animation: storm-scan 2.5s ease-in-out infinite;
+}
+
+@keyframes storm-scan {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================================
+   11. ФОРМЫ
+   ============================================================ */
+.theme-key-storm input,
+.theme-key-storm textarea,
+.theme-key-storm select,
+.theme-key-storm .input,
+.theme-key-storm .admin-input {
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-key-storm input:focus,
+.theme-key-storm textarea:focus,
+.theme-key-storm select:focus,
+.theme-key-storm .input:focus,
+.theme-key-storm .admin-input:focus {
+  outline: none;
+  border-color: rgba(167, 139, 250, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(167, 139, 250, 0.15),
+    0 0 18px rgba(167, 139, 250, 0.20);
+}
+
+.theme-key-storm ::placeholder {
+  color: var(--dim);
+}
+
+/* ============================================================
+   12. ТАБЛИЦЫ, БЕЙДЖИ
+   ============================================================ */
+.theme-key-storm .ticket-status-badge,
+.theme-key-storm .admin-badge {
+  border-radius: 999px;
+  border: 1px solid rgba(167, 139, 250, 0.30);
+  background: rgba(167, 139, 250, 0.10);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.theme-key-storm .admin-table thead th,
+.theme-key-storm table thead th {
+  background: rgba(167, 139, 250, 0.05);
+  color: var(--accent);
+  border-bottom: 1px solid rgba(167, 139, 250, 0.22);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.theme-key-storm .admin-table tbody tr,
+.theme-key-storm table tbody tr {
+  border-bottom: 1px solid rgba(167, 139, 250, 0.08);
+  transition: background 0.25s ease;
+}
+
+.theme-key-storm .admin-table tbody tr:hover,
+.theme-key-storm table tbody tr:hover {
+  background: rgba(167, 139, 250, 0.05);
+}
+
+/* ============================================================
+   13. ИКОНКИ LUCIDE
+   ============================================================ */
+.theme-key-storm svg.lucide,
+.theme-key-storm svg[class*="lucide-"] {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+  fill: none !important;
+  stroke-width: 1.7;
+  filter: drop-shadow(0 0 5px rgba(167, 139, 250, 0.45));
+  transition: filter 0.3s ease, stroke 0.3s ease, color 0.3s ease;
+}
+
+.theme-key-storm .app-nav-item:hover svg.lucide,
+.theme-key-storm .admin-nav-item:hover svg.lucide {
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.70));
+}
+
+.theme-key-storm .app-nav-item.active svg.lucide,
+.theme-key-storm .app-nav-item.is-active svg.lucide,
+.theme-key-storm .admin-nav-item.active svg.lucide,
+.theme-key-storm .admin-nav-item.is-active svg.lucide {
+  color: var(--storm-yellow) !important;
+  stroke: var(--storm-yellow) !important;
+  filter:
+    drop-shadow(0 0 10px rgba(253, 224, 71, 0.85))
+    drop-shadow(0 0 4px rgba(167, 139, 250, 0.60));
+}
+
+.theme-key-storm .bottom-nav button.active svg.lucide,
+.theme-key-storm .bottom-nav button.is-active svg.lucide {
+  color: var(--storm-yellow) !important;
+  stroke: var(--storm-yellow) !important;
+  filter: drop-shadow(0 0 10px rgba(253, 224, 71, 0.80));
+}
+
+.theme-key-storm .btn-primary svg.lucide,
+.theme-key-storm .admin-btn-primary svg.lucide,
+.theme-key-storm button[type="submit"] svg.lucide {
+  color: #0a0b12 !important;
+  stroke: #0a0b12 !important;
+  filter: drop-shadow(0 0 3px rgba(10, 11, 18, 0.35));
+}
+
+/* ============================================================
+   14. СКРОЛЛБАР
+   ============================================================ */
+.theme-key-storm ::-webkit-scrollbar { width: 8px; height: 8px; }
+.theme-key-storm ::-webkit-scrollbar-track { background: transparent; }
+.theme-key-storm ::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(167, 139, 250, 0.40),
+    rgba(253, 224, 71, 0.30),
+    rgba(167, 139, 250, 0.40)
+  );
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.theme-key-storm ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(167, 139, 250, 0.70),
+    rgba(253, 224, 71, 0.55),
+    rgba(167, 139, 250, 0.70)
+  );
+  background-clip: padding-box;
+}
+
+/* ============================================================
+   15. ПОЯВЛЕНИЕ КОНТЕНТА
+   ============================================================ */
+.theme-key-storm .app-main-content {
+  animation: storm-appear 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes storm-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+    filter: blur(5px);
+  }
+  60% { filter: blur(0); }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ============================================================
+   16. ВНЕ SHELL — тосты, дропдауны
+   ============================================================ */
+body:has(.theme-key-storm) .app-toast {
+  background: var(--panel-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text) !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-radius: 12px;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 0 22px rgba(167, 139, 250, 0.14);
+}
+
+body:has(.theme-key-storm) .language-select-content,
+body:has(.theme-key-storm) .admin-select-content,
+body:has(.theme-key-storm) .install-platform-content,
+body:has(.theme-key-storm) .support-select-content,
+body:has(.theme-key-storm) .field-error-tooltip {
+  background: var(--panel-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text) !important;
+  border-radius: 12px;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 0 22px rgba(167, 139, 250, 0.16);
+}
+
+body:has(.theme-key-storm) .language-select-item[data-highlighted],
+body:has(.theme-key-storm) .language-select-item[data-selected],
+body:has(.theme-key-storm) .install-platform-item[data-highlighted],
+body:has(.theme-key-storm) .install-platform-item[data-selected] {
+  background: rgba(167, 139, 250, 0.16) !important;
+  color: var(--accent) !important;
+}
+
+/* ============================================================
+   17. ДОСТУПНОСТЬ — важно для этой темы
+   Вспышки могут быть опасны при эпилепсии. Обязательно
+   отключаем их при prefers-reduced-motion.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .theme-key-storm.app-shell::before,
+  .theme-key-storm .app-main-content::before,
+  .theme-key-storm .app-main-content,
+  .theme-key-storm .app-nav-item.active,
+  .theme-key-storm .admin-nav-item.active,
+  .theme-key-storm .app-nav-item.active::after,
+  .theme-key-storm .bottom-nav button.active::after,
+  .theme-key-storm .progress > span,
+  .theme-key-storm .progress > span::after,
+  .theme-key-storm .progress [style*="width"]::after,
+  .theme-key-storm .app-logo img,
+  .theme-key-storm .app-logo svg,
+  .theme-key-storm .app-sidebar h1,
+  .theme-key-storm .app-logo-text,
+  .theme-key-storm .btn-primary:hover:not(:disabled),
+  .theme-key-storm .admin-btn-primary:hover:not(:disabled) {
+    animation: none !important;
+  }
+  .theme-key-storm .app-main-content::before {
+    opacity: 0 !important;
+  }
+  .theme-key-storm .btn-primary::before,
+  .theme-key-storm .admin-btn-primary::before {
+    display: none !important;
+  }
+  .theme-key-storm .app-sidebar h1,
+  .theme-key-storm .app-logo-text {
+    background-position: 0% 50% !important;
+  }
+}
+
+/* ============================================================
+   18. МОБИЛЬНЫЕ — облегчаем и убираем вспышки
+   ============================================================ */
+@media (max-width: 1023px) {
+  /* Облака — меньше движения */
+  .theme-key-storm.app-shell::before {
+    animation-duration: 140s;
+  }
+
+  /* Вспышки молний отключаем — маленький экран + резкий свет
+     = дискомфорт и риск для глаз */
+  .theme-key-storm .app-main-content::before {
+    display: none !important;
+  }
+
+  /* Логотип без вспышек */
+  .theme-key-storm .app-sidebar h1,
+  .theme-key-storm .app-logo-text {
+    animation: storm-shimmer 12s linear infinite;
+  }
+
+  /* Дрожание активных пунктов убираем */
+  .theme-key-storm .app-nav-item.active,
+  .theme-key-storm .admin-nav-item.active {
+    animation: none;
+  }
+
+  /* Пульсирующие искры убираем */
+  .theme-key-storm .app-nav-item.active::after,
+  .theme-key-storm .bottom-nav button.active::after {
+    display: none !important;
+  }
+
+  /* Активный пункт — мягкая подсветка */
+  .theme-key-storm .app-nav-item.active,
+  .theme-key-storm .app-nav-item.is-active,
+  .theme-key-storm .bottom-nav button.active {
+    border-left: none !important;
+    background: rgba(167, 139, 250, 0.14) !important;
+    box-shadow: inset 0 0 16px rgba(167, 139, 250, 0.10);
+    border-radius: 10px;
+  }
+
+  /* Меньше blur */
+  .theme-key-storm .app-card,
+  .theme-key-storm .app-panel {
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter: blur(14px) saturate(120%);
+  }
+
+  .theme-key-storm .app-sidebar,
+  .theme-key-storm .admin-sidebar {
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    backdrop-filter: blur(20px) saturate(130%);
+  }
+
+  /* Логотип без пульсации */
+  .theme-key-storm .app-logo img,
+  .theme-key-storm .app-logo svg {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   19. АДМИНКА — Storm
+   ============================================================ */
+.theme-key-storm .admin-sidebar {
+  background: var(--panel-3) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(130%);
+  backdrop-filter: blur(22px) saturate(130%);
+  border-right: 1px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+.theme-key-storm .admin-sidebar-brand strong,
+.theme-key-storm .admin-sidebar [class*="brand"] strong {
+  background: linear-gradient(270deg,
+    #a78bfa 0%, #c4b5fd 30%, #fde047 50%, #c4b5fd 70%, #a78bfa 100%);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 2px;
+  animation: storm-shimmer 12s linear infinite;
+}
+
+.theme-key-storm .admin-nav-item {
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-key-storm .admin-nav-item:hover {
+  background: rgba(167, 139, 250, 0.07);
+  color: var(--accent);
+}
+
+.theme-key-storm .admin-nav-item.active,
+.theme-key-storm .admin-nav-item.is-active {
+  background: linear-gradient(90deg,
+    rgba(167, 139, 250, 0.18),
+    rgba(253, 224, 71, 0.06) 60%,
+    transparent) !important;
+  border-left: 3px solid var(--accent);
+  box-shadow:
+    inset 0 0 18px rgba(167, 139, 250, 0.14),
+    0 0 14px rgba(167, 139, 250, 0.14);
+  color: var(--accent);
+  animation: storm-tremble 5s ease-in-out infinite;
+}
+
+.theme-key-storm .admin-btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 55%, #a78bfa 100%) !important;
+  background-size: 200% 200% !important;
+  border: none !important;
+  color: #0a0b12 !important;
+  font-weight: 600;
+  box-shadow:
+    0 4px 16px rgba(167, 139, 250, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  transition:
+    box-shadow 0.35s ease,
+    background-position 0.6s ease;
+}
+
+.theme-key-storm .admin-btn-primary:hover:not(:disabled) {
+  background-position: 100% 100% !important;
+  box-shadow:
+    0 6px 24px rgba(167, 139, 250, 0.55),
+    0 0 30px rgba(253, 224, 71, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+  animation: storm-discharge 4s ease-in-out infinite;
+}
+
+.theme-key-storm .admin-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+    transparent 30%, rgba(255, 255, 255, 0.40) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.85s ease;
+  pointer-events: none;
+}
+
+.theme-key-storm .admin-btn-primary:hover:not(:disabled)::before {
+  transform: translateX(100%);
+}
+
+.theme-key-storm .admin-badge,
+.theme-key-storm .ticket-status-badge {
+  border-radius: 999px;
+  border: 1px solid rgba(167, 139, 250, 0.30);
+  background: rgba(167, 139, 250, 0.10);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.theme-key-storm .admin-table thead th,
+.theme-key-storm table thead th {
+  background: rgba(167, 139, 250, 0.05);
+  color: var(--accent);
+  border-bottom: 1px solid rgba(167, 139, 250, 0.22);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.theme-key-storm .admin-table tbody tr,
+.theme-key-storm table tbody tr {
+  border-bottom: 1px solid rgba(167, 139, 250, 0.08);
+  transition: background 0.25s ease;
+}
+
+.theme-key-storm .admin-table tbody tr:hover,
+.theme-key-storm table tbody tr:hover {
+  background: rgba(167, 139, 250, 0.05);
+}
+
+.theme-key-storm .admin-input {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.theme-key-storm .admin-input:focus {
+  outline: none;
+  border-color: rgba(167, 139, 250, 0.55);
+  box-shadow:
+    0 0 0 3px rgba(167, 139, 250, 0.15),
+    0 0 16px rgba(253, 224, 71, 0.15);
+}
+
+body:has(.theme-key-storm) .admin-select-content {
+  background: var(--panel-2) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text) !important;
+  border-radius: 12px;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.55),
+    0 0 22px rgba(167, 139, 250, 0.16);
+}
+
+body:has(.theme-key-storm) .admin-select-item[data-highlighted],
+body:has(.theme-key-storm) .admin-select-item[data-selected] {
+  background: rgba(167, 139, 250, 0.16) !important;
+  color: var(--accent) !important;
+}

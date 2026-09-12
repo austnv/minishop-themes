@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": {
-    "ru": "Кристалл",
-    "en": "Crystal"
+    "ru": "Гроза",
+    "en": "Thunderstorm"
   },
   "author": { "name": "austnv" },
   "license": "MIT",
