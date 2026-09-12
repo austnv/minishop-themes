@@ -21,43 +21,42 @@
 
 ### Основные цвета
 
-| Токен        | Значение             |                                                                                    Плашка                                                                                    | Использование                                                                |
-| ----------------- | ---------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | ----------------------------------------------------------------------------------------- |
-| `accent`        | `#5cc8ff`                  |        <span style="display:inline-block;width:60px;height:20px;background:#5cc8ff;border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span>        | «Реактор» интерфейса — свечения, границы, кнопки |
-| `bg`            | `#02040a`                  |        <span style="display:inline-block;width:60px;height:20px;background:#02040a;border:1px solid rgba(255,255,255,0.3);border-radius:4px;vertical-align:middle;"></span>        | Вакуум — почти чёрный с холодным оттенком              |
-| `panel`         | `#080e18`                  |        <span style="display:inline-block;width:60px;height:20px;background:#080e18;border:1px solid rgba(255,255,255,0.3);border-radius:4px;vertical-align:middle;"></span>        | Основная панель                                                             |
-| `panel_2`       | `#0d1521`                  |        <span style="display:inline-block;width:60px;height:20px;background:#0d1521;border:1px solid rgba(255,255,255,0.3);border-radius:4px;vertical-align:middle;"></span>        | Вложенная панель                                                           |
-| `panel_3`       | `#141f2e`                  |        <span style="display:inline-block;width:60px;height:20px;background:#141f2e;border:1px solid rgba(255,255,255,0.3);border-radius:4px;vertical-align:middle;"></span>        | Всплывающие элементы, тосты                                       |
-| `border`        | `rgba(92, 200, 255, 0.14)` | <span style="display:inline-block;width:60px;height:20px;background:rgba(92,200,255,0.14);border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span> | Обычные границы                                                             |
-| `border_strong` | `rgba(92, 200, 255, 0.32)` | <span style="display:inline-block;width:60px;height:20px;background:rgba(92,200,255,0.32);border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span> | Акцентные границы                                                         |
+| Токен | Значение | Плашка | Использование |
+|-------|----------|:------:|---------------|
+| `accent` | `#5cc8ff` | ![5cc8ff](https://img.shields.io/badge/-5cc8ff?style=flat-square) | «Реактор» интерфейса — свечения, границы, кнопки |
+| `bg` | `#02040a` | ![02040a](https://img.shields.io/badge/-02040a?style=flat-square) | Вакуум — почти чёрный с холодным оттенком |
+| `panel` | `#080e18` | ![080e18](https://img.shields.io/badge/-080e18?style=flat-square) | Основная панель |
+| `panel_2` | `#0d1521` | ![0d1521](https://img.shields.io/badge/-0d1521?style=flat-square) | Вложенная панель |
+| `panel_3` | `#141f2e` | ![141f2e](https://img.shields.io/badge/-141f2e?style=flat-square) | Всплывающие элементы, тосты |
+| `border` | `rgba(92, 200, 255, 0.14)` | ![5cc8ff24](https://img.shields.io/badge/-5cc8ff24?style=flat-square) | Обычные границы |
+| `border_strong` | `rgba(92, 200, 255, 0.32)` | ![5cc8ff52](https://img.shields.io/badge/-5cc8ff52?style=flat-square) | Акцентные границы |
 
 ### Текст и состояния
 
-| Токен | Значение |                                                                             Плашка                                                                             | Использование                                                        |
-| ---------- | ---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------: | --------------------------------------------------------------------------------- |
-| `text`   | `#eaf3fb`      |    <span style="display:inline-block;width:60px;height:20px;background:#eaf3fb;border:1px solid rgba(0,0,0,0.2);border-radius:4px;vertical-align:middle;"></span>    | Основной текст                                                       |
-| `muted`  | `#7d92ab`      |    <span style="display:inline-block;width:60px;height:20px;background:#7d92ab;border:1px solid rgba(0,0,0,0.2);border-radius:4px;vertical-align:middle;"></span>    | Второстепенный текст                                           |
-| `dim`    | `#465a73`      | <span style="display:inline-block;width:60px;height:20px;background:#465a73;border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span> | Приглушённый текст                                               |
-| `danger` | `#ff5c7c`      | <span style="display:inline-block;width:60px;height:20px;background:#ff5c7c;border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span> | Ошибки и предупреждения                                      |
-| `blue`   | `#5cc8ff`      | <span style="display:inline-block;width:60px;height:20px;background:#5cc8ff;border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span> | Информационные сообщения (совпадает с`accent`) |
+| Токен | Значение | Плашка | Использование |
+|-------|----------|:------:|---------------|
+| `text` | `#eaf3fb` | ![eaf3fb](https://img.shields.io/badge/-eaf3fb?style=flat-square) | Основной текст |
+| `muted` | `#7d92ab` | ![7d92ab](https://img.shields.io/badge/-7d92ab?style=flat-square) | Второстепенный текст |
+| `dim` | `#465a73` | ![465a73](https://img.shields.io/badge/-465a73?style=flat-square) | Приглушённый текст |
+| `danger` | `#ff5c7c` | ![ff5c7c](https://img.shields.io/badge/-ff5c7c?style=flat-square) | Ошибки и предупреждения |
+| `blue` | `#5cc8ff` | ![5cc8ff](https://img.shields.io/badge/-5cc8ff?style=flat-square) | Информационные сообщения |
 
 ## 🎨 Палитра
 
 Все цвета, которые встречаются в теме — включая те, что используются только внутри CSS, но не объявлены как токены.
 
-| Цвет                                  | Hex                           |                                                                                    Плашка                                                                                    | Где встречается                                                                 |
-| ----------------------------------------- | ----------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | --------------------------------------------------------------------------------------------- |
-| Небесно-голубой             | `#5cc8ff`                   |        <span style="display:inline-block;width:60px;height:20px;background:#5cc8ff;border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span>        | Основной акцент: границы, свечения, иконки, логотип |
-| Голубой неон                   | `#00e5ff`                   |        <span style="display:inline-block;width:60px;height:20px;background:#00e5ff;border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span>        | Заливка прогресс-баров, второй стоп градиента          |
-| Фиолетовый                      | `#a78bfa`                   |        <span style="display:inline-block;width:60px;height:20px;background:#a78bfa;border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span>        | Второй стоп градиента логотипа, туманность               |
-| Глубокий синий               | `#2b7fff`                   |        <span style="display:inline-block;width:60px;height:20px;background:#2b7fff;border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span>        | Нижний стоп кнопок, вторичный акцент                           |
-| Вакуум                              | `#02040a`                   |        <span style="display:inline-block;width:60px;height:20px;background:#02040a;border:1px solid rgba(255,255,255,0.3);border-radius:4px;vertical-align:middle;"></span>        | Основной фон                                                                       |
-| Глубокий космос             | `#080e18`                   |        <span style="display:inline-block;width:60px;height:20px;background:#080e18;border:1px solid rgba(255,255,255,0.3);border-radius:4px;vertical-align:middle;"></span>        | Панели                                                                                  |
-| Приглушённый красный   | `#ff5c7c`                   |        <span style="display:inline-block;width:60px;height:20px;background:#ff5c7c;border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span>        | Ошибки и предупреждения                                                  |
-| Звёздный белый               | `rgba(255, 255, 255, 0.9)`  |    <span style="display:inline-block;width:60px;height:20px;background:rgba(255,255,255,0.9);border:1px solid rgba(0,0,0,0.2);border-radius:4px;vertical-align:middle;"></span>    | Звёзды, текст на кнопках                                                  |
-| Стекло панелей               | `rgba(8, 14, 24, 0.75)`     |   <span style="display:inline-block;width:60px;height:20px;background:rgba(8,14,24,0.75);border:1px solid rgba(255,255,255,0.3);border-radius:4px;vertical-align:middle;"></span>   | Фон карточек, модалок, сайдбара                                     |
-| Туманность голубая       | `rgba(92, 200, 255, 0.10)`  | <span style="display:inline-block;width:60px;height:20px;background:rgba(92,200,255,0.10);border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span> | Первая туманность на фоне                                               |
-| Туманность фиолетовая | `rgba(167, 139, 250, 0.09)` | <span style="display:inline-block;width:60px;height:20px;background:rgba(167,139,250,0.09);border:1px solid rgba(255,255,255,0.2);border-radius:4px;vertical-align:middle;"></span> | Вторая туманность на фоне                                               |
+| Цвет | Hex | Плашка | Где встречается |
+|------|-----|:------:|-----------------|
+| Небесно-голубой | `#5cc8ff` | ![5cc8ff](https://img.shields.io/badge/-5cc8ff?style=flat-square) | Основной акцент |
+| Голубой неон | `#00e5ff` | ![00e5ff](https://img.shields.io/badge/-00e5ff?style=flat-square) | Прогресс-бары |
+| Фиолетовый | `#a78bfa` | ![a78bfa](https://img.shields.io/badge/-a78bfa?style=flat-square) | Градиент логотипа |
+| Глубокий синий | `#2b7fff` | ![2b7fff](https://img.shields.io/badge/-2b7fff?style=flat-square) | Кнопки |
+| Вакуум | `#02040a` | ![02040a](https://img.shields.io/badge/-02040a?style=flat-square) | Фон |
+| Глубокий космос | `#080e18` | ![080e18](https://img.shields.io/badge/-080e18?style=flat-square) | Панели |
+| Приглушённый красный | `#ff5c7c` | ![ff5c7c](https://img.shields.io/badge/-ff5c7c?style=flat-square) | Ошибки |
+| Стекло панелей | `rgba(8, 14, 24, 0.75)` | ![080e18bf](https://img.shields.io/badge/-080e18bf?style=flat-square) | Карточки, модалки |
+| Туманность голубая | `rgba(92, 200, 255, 0.10)` | ![5cc8ff1a](https://img.shields.io/badge/-5cc8ff1a?style=flat-square) | Фоновая туманность |
+| Туманность фиолетовая | `rgba(167, 139, 250, 0.09)` | ![a78bfa17](https://img.shields.io/badge/-a78bfa17?style=flat-square) | Фоновая туманность |                                      |
 
 ## 🎬 Градиенты
 
