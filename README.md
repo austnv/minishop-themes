@@ -18,7 +18,6 @@
 
 ```
 URL:      https://git.uvpn.app/austnv/minishop-themes
-Ветка:    master
 ```
 
 При обновлении репозитория тему можно переустановить одной кнопкой.
