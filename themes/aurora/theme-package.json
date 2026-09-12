@@ -8,6 +8,5 @@
   "author": { "name": "austnv" },
   "license": "MIT",
   "homepage": "https://github.com/austnv/minishop-themes",
-  "preview": "preview.png",
   "compatibility": { "theme_api": 1 }
 }
