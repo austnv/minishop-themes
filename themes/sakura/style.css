@@ -50,12 +50,12 @@ body:has(.theme-key-sakura)::before {
 }
 
 body:has(.theme-key-sakura.theme-dark)::before {
-  background-image: url("/webapp-theme-assets/sakura/bg-dark.webp");
+  background-image: url("assets/bg-dark.jpg");
   background-color: #0a0a1f;
 }
 
 body:has(.theme-key-sakura.theme-light)::before {
-  background-image: url("/webapp-theme-assets/sakura/bg-light.webp");
+  background-image: url("assets/bg-light.jpg");
   background-color: #fef2f9;
 }
 
