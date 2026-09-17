@@ -26,10 +26,21 @@
 }
 
 /* ------------------------------------------------------------
-   1. ФОН — ::before с z-index: 1, контент поднят до z-index: 2
-   Работает потому что stacking context .app-shell (isolation)
-   держит ::before внутри, а дети идут выше по z-index.
+   1. ФОН
+   Приложение красит body/#root в --bg (сплошной цвет).
+   Обнуляем их фон, а картинку кладём на ::before с z-index:-1.
+   Всё это живёт в stacking context .app-shell благодаря
+   isolation: isolate — потому ::before не улетит за body.
+   Контент (дети .app-shell) НЕ трогаем — он остаётся поверх
+   по умолчанию.
    ------------------------------------------------------------ */
+
+/* Обнуляем фоны вокруг */
+body:has(.theme-key-sakura),
+body:has(.theme-key-sakura) #root,
+body:has(.theme-key-sakura) > * {
+  background: transparent !important;
+}
 
 .theme-key-sakura.app-shell {
   position: relative;
@@ -41,7 +52,7 @@
   content: "";
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: -1;
   pointer-events: none;
   background-size: cover, cover;
   background-position: center, center;
@@ -65,24 +76,13 @@
     url("assets/bg-light.jpg");
 }
 
-/* Все прямые дети .app-shell — выше фонового слоя */
-.theme-key-sakura.app-shell > * {
-  position: relative;
-  z-index: 2;
-}
-
 @media (max-width: 768px) {
   .theme-key-sakura.app-shell::before {
     background-attachment: scroll, scroll;
   }
 }
 
-.theme-key-sakura.theme-light :is(
-  .app-card, .app-panel, .card, .period-card, .method-card, .option-row
-) {
-  backdrop-filter: blur(8px) saturate(120%);
-  -webkit-backdrop-filter: blur(8px) saturate(120%);
-}
+/* Удаляем блок `.theme-key-sakura.app-shell > *` — он больше не нужен */
 
 /* ------------------------------------------------------------
    2. САЙДБАР И НАВИГАЦИЯ
