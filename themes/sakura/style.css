@@ -33,9 +33,9 @@
    ------------------------------------------------------------ */
 
 .theme-key-sakura.app-shell {
+  background: transparent !important;
   position: relative;
   isolation: isolate;
-  background: var(--bg) !important;
 }
 
 .theme-key-sakura.app-shell::before {
@@ -59,11 +59,22 @@
 }
 
 .theme-key-sakura.app-shell.theme-light::before {
-  background-image:
-    linear-gradient(180deg,
-      rgba(254, 242, 249, 0.10) 0%,
-      rgba(254, 242, 249, 0.30) 100%),
-    url("assets/bg-light.jpg");
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("assets/bg-light.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+@media (max-width: 768px) {
+  .theme-key-sakura.app-shell::before {
+    background-attachment: scroll, scroll;
+  }
 }
 
 .theme-key-sakura.theme-light :is(
@@ -73,11 +84,6 @@
   -webkit-backdrop-filter: blur(8px) saturate(120%);
 }
 
-@media (max-width: 768px) {
-  .theme-key-sakura.app-shell::before {
-    background-attachment: scroll, scroll;
-  }
-}
 /* ------------------------------------------------------------
    2. САЙДБАР И НАВИГАЦИЯ
    Светлая тема — чистый полупрозрачный белый, без серости
