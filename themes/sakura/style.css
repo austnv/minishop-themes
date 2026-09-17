@@ -1,0 +1,698 @@
+/* ============================================================
+   SAKURA NO YUME — ночной японский скин
+   Палитра: лунный фиолет + фуксия. Никакого оранжевого.
+   Алгоритм: фон ::before/::after, полное покрытие селекторов,
+   body:has() для элементов вне shell, fallback-состояния.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   0. Локальные переменные
+   ------------------------------------------------------------ */
+
+.theme-key-sakura {
+  --s-glow:        rgba(192, 132, 252, 0.45);
+  --s-glow-strong: rgba(192, 132, 252, 0.70);
+  --s-glow-pink:   rgba(232, 121, 212, 0.45);
+  --s-glass-dark:        rgba(10, 10, 31, 0.55);
+  --s-glass-dark-strong: rgba(10, 10, 31, 0.80);
+  --s-glass-light:        rgba(255, 255, 255, 0.55);
+  --s-glass-light-strong: rgba(255, 255, 255, 0.82);
+  --s-border-dark:        rgba(192, 132, 252, 0.20);
+  --s-border-light:       rgba(168, 85, 247, 0.20);
+  --s-shadow:       0 18px 48px rgba(10, 10, 31, 0.55);
+  --s-shadow-light: 0 18px 48px rgba(107, 33, 168, 0.14);
+  --s-sheen:        rgba(255, 255, 255, 0.05);
+  --font-display: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ------------------------------------------------------------
+   1. ФОН — на body, под всем остальным
+   backdrop-filter дочерних карточек корректно захватывает
+   картинку, потому что она не в stacking-контексте shell
+   ------------------------------------------------------------ */
+
+.theme-key-sakura.app-shell {
+  background: transparent !important;
+  position: relative;
+}
+
+/* Фон кладём на body через :has() — работает во всех современных браузерах */
+body:has(.theme-key-sakura)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body:has(.theme-key-sakura.theme-dark)::before {
+  background-image: url("/webapp-theme-assets/sakura/bg-dark.webp");
+  background-color: #0a0a1f;
+}
+
+body:has(.theme-key-sakura.theme-light)::before {
+  background-image: url("/webapp-theme-assets/sakura/bg-light.webp");
+  background-color: #fef2f9;
+}
+
+/* Вуаль поверх фото — тоже на body, выше картинки */
+body:has(.theme-key-sakura)::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body:has(.theme-key-sakura.theme-dark)::after {
+  background:
+    radial-gradient(ellipse 45% 30% at 78% 12%, rgba(192, 132, 252, 0.18), transparent 70%),
+    radial-gradient(ellipse 50% 35% at 20% 85%, rgba(232, 121, 212, 0.10), transparent 70%),
+    linear-gradient(180deg,
+      rgba(10, 10, 31, 0.50) 0%,
+      rgba(10, 10, 31, 0.75) 100%);
+}
+
+body:has(.theme-key-sakura.theme-light)::after {
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(217, 70, 239, 0.05), transparent 70%),
+    linear-gradient(180deg,
+      rgba(254, 242, 249, 0.05) 0%,
+      rgba(254, 242, 249, 0.20) 100%);
+}
+
+/* Контент приложения должен быть выше фоновых слоёв */
+body:has(.theme-key-sakura) > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* iOS: fixed-фон плохо работает */
+@media (max-width: 768px) {
+  body:has(.theme-key-sakura)::before,
+  body:has(.theme-key-sakura)::after {
+    background-attachment: scroll;
+  }
+}
+
+/* ------------------------------------------------------------
+   2. САЙДБАР И НАВИГАЦИЯ
+   Светлая тема — чистый полупрозрачный белый, без серости
+   Тёмная — стекло с блюром
+   ------------------------------------------------------------ */
+
+.theme-key-sakura.theme-dark :is(.app-sidebar, .bottom-nav, .admin-sidebar) {
+  background: rgba(10, 10, 31, 0.55) !important;
+  border-color: rgba(192, 132, 252, 0.14) !important;
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  box-shadow: none !important;
+}
+
+.theme-key-sakura.theme-light :is(.app-sidebar, .bottom-nav, .admin-sidebar) {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-color: rgba(217, 70, 239, 0.14) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+/* ------------------------------------------------------------
+   3. КАРТОЧКИ — стекло
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(
+  .app-card, .app-panel, .card, .period-card, .method-card, .option-row,
+  .settings-row, .dialog-card, .auth-card,
+  .tariff-selected-card, .tariff-action-card, .tariff-warning-card,
+  .topup-carryover-note, .subscription-purchase-description,
+  .trial-offer-card, .trial-activation-card, .activation-success-dialog,
+  .pending-payment-card,
+  .support-overview-card, .support-list-card, .support-ticket-card,
+  .support-conversation-card, .support-create-panel, .support-empty-state,
+  .ticket-card, .ticket-composer,
+  .install-step, .install-subscription-card, .install-qr-wrap, .install-loading,
+  .telegram-notifications-card
+) {
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  border-radius: var(--radius);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.25s ease;
+}
+
+.theme-key-sakura.theme-dark :is(
+  .app-card, .app-panel, .card, .period-card, .method-card, .option-row,
+  .settings-row, .dialog-card, .auth-card,
+  .tariff-selected-card, .tariff-action-card, .tariff-warning-card,
+  .topup-carryover-note, .subscription-purchase-description,
+  .trial-offer-card, .trial-activation-card, .activation-success-dialog,
+  .pending-payment-card,
+  .support-overview-card, .support-list-card, .support-ticket-card,
+  .support-conversation-card, .support-create-panel, .support-empty-state,
+  .ticket-card, .ticket-composer,
+  .install-step, .install-subscription-card, .install-qr-wrap, .install-loading,
+  .telegram-notifications-card
+) {
+  background: linear-gradient(135deg, var(--s-sheen), transparent 55%), var(--s-glass-dark-strong) !important;
+  border: 1px solid var(--s-border-dark) !important;
+  box-shadow: var(--s-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.theme-key-sakura.theme-light :is(
+  .app-card, .app-panel, .card, .period-card, .method-card, .option-row,
+  .settings-row, .dialog-card, .auth-card,
+  .tariff-selected-card, .tariff-action-card, .tariff-warning-card,
+  .topup-carryover-note, .subscription-purchase-description,
+  .trial-offer-card, .trial-activation-card, .activation-success-dialog,
+  .pending-payment-card,
+  .support-overview-card, .support-list-card, .support-ticket-card,
+  .support-conversation-card, .support-create-panel, .support-empty-state,
+  .ticket-card, .ticket-composer,
+  .install-step, .install-subscription-card, .install-qr-wrap, .install-loading,
+  .telegram-notifications-card
+) {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid rgba(217, 70, 239, 0.18) !important;
+  box-shadow:
+    0 12px 32px rgba(157, 23, 77, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.theme-key-sakura :is(
+  .app-card, .card, .period-card, .method-card, .option-row,
+  .support-list-card, .ticket-card, .install-step, .install-subscription-card
+):hover {
+  border-color: var(--accent) !important;
+  transform: translateY(-1px);
+}
+
+/* ------------------------------------------------------------
+   4. АДМИНКА
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(
+  .admin-card, .admin-stat-card, .admin-revenue-panel,
+  .admin-theme-card, .default-theme-editor, .default-theme-panel,
+  .appearance-control-card, .appearance-logo-preview, .appearance-favicon-preview,
+  .admin-user-action-sheet, .admin-toolbar-card, .admin-table-card,
+  .admin-tariff-card, .admin-empty, .admin-panel-dash-card,
+  .admin-promo-config-block, .admin-promo-editor-section
+) {
+  border: 1px solid var(--admin-border, var(--border)) !important;
+  border-radius: var(--radius);
+  background: var(--admin-surface, var(--panel)) !important;
+  box-shadow: 0 8px 28px rgba(10, 10, 31, 0.35);
+}
+
+.theme-key-sakura .admin-header {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--accent) 22%, transparent),
+    transparent 70%) !important;
+  border-bottom: 1px solid var(--admin-border, var(--border)) !important;
+}
+
+.theme-key-sakura .admin-sidebar-brand,
+.theme-key-sakura .admin-card-head {
+  border-bottom: 1px solid var(--admin-border, var(--border)) !important;
+}
+
+/* ------------------------------------------------------------
+   5. НАВИГАЦИЯ — активный пункт как светящаяся пилюля
+   Никаких левых полос и точек из других тем
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(.app-nav-item, .bottom-nav button, .admin-nav-item, .admin-tabs-trigger) {
+  border-radius: 999px;
+  position: relative;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-left: none !important;
+  transition:
+    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.3s ease,
+    box-shadow 0.35s ease,
+    transform 0.25s ease;
+}
+
+.theme-key-sakura :is(.app-nav-item, .bottom-nav button, .admin-nav-item):hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  transform: translateX(2px);
+}
+
+/* Активный — мягкая пилюля с внутренним градиентом и внешним glow */
+.theme-key-sakura :is(
+  .app-nav-item.active, .app-nav-item.is-active, .app-nav-item[data-active="true"],
+  .bottom-nav button.active, .bottom-nav button.is-active,
+  .admin-nav-item.active, .admin-nav-item.is-active,
+  .admin-tabs-trigger[data-state="active"], .admin-revenue-period-btn.is-active
+) {
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--accent) 22%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 8%, transparent) 55%,
+      transparent 100%) !important;
+  border-radius: 999px !important;
+  color: var(--accent) !important;
+  border-left: none !important;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 32%, transparent),
+    0 6px 24px color-mix(in srgb, var(--accent) 22%, transparent);
+  transform: translateX(2px);
+}
+
+/* Иконка активного — яркая с усиленным свечением */
+.theme-key-sakura :is(
+  .app-nav-item.active, .app-nav-item.is-active,
+  .bottom-nav button.active, .bottom-nav button.is-active,
+  .admin-nav-item.active, .admin-nav-item.is-active
+) svg.lucide {
+  color: var(--accent) !important;
+  stroke: var(--accent) !important;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 75%, transparent));
+}
+
+/* Убеждаемся, что псевдоэлемент-точка нигде не появляется */
+.theme-key-sakura :is(
+  .app-nav-item.active, .app-nav-item.is-active, .app-nav-item[data-active="true"],
+  .bottom-nav button.active, .bottom-nav button.is-active,
+  .admin-nav-item.active, .admin-nav-item.is-active
+)::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Убираем анимацию пульсации — она больше не нужна */
+/* @keyframes s-pulse остаётся в файле, но не используется */
+
+/* ------------------------------------------------------------
+   6. КНОПКИ — фиолетово-розовый градиент
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(
+  .btn-primary, button[type="submit"], .admin-btn-primary,
+  .support-new-ticket-button, .install-app-button.active
+) {
+  background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 12px;
+  box-shadow:
+    0 4px 20px rgba(217, 70, 239, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  transition: box-shadow 0.3s ease, transform 0.15s ease;
+}
+
+.theme-key-sakura.theme-light :is(.btn-primary, button[type="submit"], .admin-btn-primary) {
+  background: linear-gradient(135deg, #e879d4 0%, #c084fc 100%) !important;
+  box-shadow:
+    0 4px 20px rgba(217, 70, 239, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+.theme-key-sakura :is(
+  .btn-primary:hover:not(:disabled),
+  button[type="submit"]:hover:not(:disabled),
+  .admin-btn-primary:hover:not(:disabled),
+  .support-new-ticket-button:hover:not(:disabled)
+) {
+  box-shadow:
+    0 6px 28px var(--s-glow-strong),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+  transform: translateY(-1px);
+}
+
+.theme-key-sakura :is(.btn-primary:active:not(:disabled), .admin-btn-primary:active:not(:disabled)) {
+  transform: translateY(0);
+}
+
+/* Вторичные кнопки */
+.theme-key-sakura :is(
+  .btn:not(.btn-primary), .admin-btn:not(.admin-btn-primary),
+  .link-button, .language-select-trigger, .install-platform-trigger,
+  .support-select-trigger, .admin-select-trigger, .admin-chip,
+  .admin-language-trigger, .admin-mobile-toggle
+) {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  color: var(--accent);
+  border-radius: 12px;
+  transition: all 0.25s ease;
+}
+
+.theme-key-sakura :is(
+  .btn:not(.btn-primary), .admin-btn:not(.admin-btn-primary),
+  .link-button, .language-select-trigger, .install-platform-trigger,
+  .support-select-trigger, .admin-select-trigger
+):hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  box-shadow: 0 0 16px var(--s-glow);
+}
+
+/* ------------------------------------------------------------
+   7. ИНПУТЫ
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  textarea, select, .input, .textarea, .admin-input, .admin-textarea
+) {
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  border-radius: 10px;
+  color: var(--text);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.theme-key-sakura :is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+  textarea, select, .input, .textarea, .admin-input, .admin-textarea
+):focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--accent) 65%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.theme-key-sakura :is(input, textarea, .input, .textarea)::placeholder {
+  color: var(--dim);
+  opacity: 0.85;
+}
+
+/* ------------------------------------------------------------
+   8. ПРОГРЕСС-БАРЫ
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(.progress, .progress-bar, [role="progressbar"]) {
+  position: relative;
+  display: block;
+  height: 10px !important;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+.theme-key-sakura :is(.progress, .progress-bar, [role="progressbar"]) > span,
+.theme-key-sakura .progress-fill {
+  display: block !important;
+  height: 100% !important;
+  min-width: 12px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, #a855f7 0%, #c084fc 50%, #e879d4 100%) !important;
+  box-shadow: 0 0 14px var(--s-glow-strong);
+  position: relative;
+  overflow: hidden;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-key-sakura :is(.progress, .progress-bar, [role="progressbar"]) > span::after,
+.theme-key-sakura .progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: s-scan 2.8s ease-in-out infinite;
+}
+
+@keyframes s-scan {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ------------------------------------------------------------
+   9. ТАБЛИЦЫ
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(.admin-table, table) thead th {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  color: var(--accent);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+
+.theme-key-sakura :is(.admin-table, table) tbody tr {
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 10%, transparent);
+  transition: background 0.25s ease;
+}
+
+.theme-key-sakura :is(.admin-table, table) tbody tr:hover {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+/* ------------------------------------------------------------
+   10. БЕЙДЖИ, ЧИПЫ, ИНДИКАТОРЫ
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(
+  .ticket-status-badge, .ticket-priority-badge, .ticket-message-role-badge,
+  .admin-badge, .admin-cn-badge, .promo-status-chip,
+  .admin-header-count, .admin-promo-tab-dirty-count
+) {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.theme-key-sakura :is(.attention-dot, .nav-badge, .nav-badge-floating) {
+  background: #e879d4;
+  box-shadow: 0 0 12px var(--s-glow-pink);
+}
+
+/* ------------------------------------------------------------
+   11. ИКОНКИ
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(svg.lucide, svg[class*="lucide-"]) {
+  color: var(--accent);
+  stroke: currentColor;
+  stroke-width: 1.8;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 45%, transparent));
+  transition: filter 0.3s ease, stroke 0.3s ease;
+}
+
+.theme-key-sakura :is(
+  .app-nav-item:hover, .app-nav-item.active,
+  .bottom-nav button.active, .admin-nav-item.active
+) svg.lucide {
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 80%, transparent));
+}
+
+.theme-key-sakura :is(
+  .btn-primary, .admin-btn-primary, .bottom-nav button.active,
+  .app-nav-item.active, .install-app-button.active,
+  .support-new-ticket-button
+) svg.lucide {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.55));
+}
+
+/* ------------------------------------------------------------
+   12. ДИАЛОГИ И МОДАЛКИ
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(.dialog-card, .auth-card) {
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+}
+
+/* ------------------------------------------------------------
+   13. ЭЛЕМЕНТЫ ВНЕ SHELL — тусты, дропдауны
+   ------------------------------------------------------------ */
+
+body:has(.theme-key-sakura.theme-dark) :is(
+  .app-toast, .language-select-content, .admin-select-content,
+  .support-select-content, .install-platform-content,
+  .field-error-tooltip, .payment-method-tooltip,
+  .admin-settings-search-results
+) {
+  background: rgba(10, 10, 31, 0.96) !important;
+  border: 1px solid rgba(192, 132, 252, 0.35) !important;
+  color: #f0e6ff !important;
+  border-radius: 14px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+body:has(.theme-key-sakura.theme-light) :is(
+  .app-toast, .language-select-content, .admin-select-content,
+  .support-select-content, .install-platform-content,
+  .field-error-tooltip, .payment-method-tooltip,
+  .admin-settings-search-results
+) {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(168, 85, 247, 0.35) !important;
+  color: #3b0764 !important;
+  border-radius: 14px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 12px 40px rgba(107, 33, 168, 0.18);
+}
+
+body:has(.theme-key-sakura) :is(
+  .language-select-item[data-highlighted], .language-select-item[data-selected],
+  .support-select-item[data-highlighted], .support-select-item[data-selected],
+  .install-platform-item[data-highlighted], .install-platform-item[data-selected],
+  .admin-select-item[data-highlighted], .admin-select-item[data-selected]
+) {
+  background: rgba(192, 132, 252, 0.18);
+  color: #c084fc !important;
+}
+
+/* ------------------------------------------------------------
+   14. ЛОГОТИП — переливающийся градиент
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(
+  .app-sidebar h1, .app-logo-text, .brand-row strong,
+  .login-brand h1, .admin-sidebar-brand strong
+) {
+  background: linear-gradient(135deg,
+    #d946ef 0%, #a855f7 50%, #e879d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: none;
+}
+
+.theme-key-sakura.theme-dark :is(
+  .app-sidebar h1, .app-logo-text, .brand-row strong,
+  .login-brand h1, .admin-sidebar-brand strong
+) {
+  background: linear-gradient(135deg,
+    #e879d4 0%, #c084fc 50%, #a855f7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes s-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+.theme-key-sakura :is(h1, h2, h3) {
+  font-family: var(--font-display);
+  letter-spacing: 0.5px;
+}
+
+.theme-key-sakura .app-logo img,
+.theme-key-sakura .app-logo svg {
+  filter: drop-shadow(0 0 16px var(--s-glow))
+          drop-shadow(0 0 5px var(--s-glow-strong));
+}
+
+/* ------------------------------------------------------------
+   15. СКРОЛЛБАР
+   ------------------------------------------------------------ */
+
+.theme-key-sakura ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.theme-key-sakura ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.theme-key-sakura ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent) 50%, transparent),
+    color-mix(in srgb, var(--accent) 20%, transparent));
+  border-radius: 8px;
+}
+.theme-key-sakura ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent) 75%, transparent),
+    color-mix(in srgb, var(--accent) 40%, transparent));
+}
+
+/* ------------------------------------------------------------
+   16. FOCUS-VISIBLE
+   ------------------------------------------------------------ */
+
+.theme-key-sakura :is(
+  .btn, .admin-btn, .app-nav-item, .bottom-nav button,
+  .admin-nav-item, .admin-tabs-trigger, .language-select-trigger,
+  .install-platform-trigger, .support-select-trigger, .link-button
+):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   17. ВЫДЕЛЕНИЕ ТЕКСТА
+   ------------------------------------------------------------ */
+
+.theme-key-sakura ::selection {
+  background: rgba(192, 132, 252, 0.55);
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------
+   18. ПОЯВЛЕНИЕ КОНТЕНТА
+   ------------------------------------------------------------ */
+
+.theme-key-sakura .app-main-content {
+  animation: s-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes s-fade-up {
+  0%   { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+  60%  { filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* ------------------------------------------------------------
+   19. REDUCED MOTION
+   ------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-key-sakura *, .theme-key-sakura *::before, .theme-key-sakura *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   20. МОБИЛЬНЫЕ
+   ------------------------------------------------------------ */
+
+@media (max-width: 1023px) {
+  .theme-key-sakura :is(.app-nav-item.active, .app-nav-item.is-active) {
+    padding-left: 1rem !important;
+    background: color-mix(in srgb, var(--accent) 16%, transparent) !important;
+    border-radius: 999px;
+    transform: none;
+  }
+
+  .theme-key-sakura :is(.bottom-nav button.active, .bottom-nav button.is-active) {
+    background: color-mix(in srgb, var(--accent) 20%, transparent) !important;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 34%, transparent);
+    transform: none;
+  }
+
+  .theme-key-sakura :is(.app-card, .app-panel, .card) {
+    backdrop-filter: blur(12px) saturate(115%);
+    -webkit-backdrop-filter: blur(12px) saturate(115%);
+  }
+}
